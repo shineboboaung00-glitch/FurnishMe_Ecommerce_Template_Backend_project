@@ -748,7 +748,7 @@ section {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: .5rem;
+    gap: 0.5rem;
     background: rgba(242, 242, 242, 0.7);
     z-index: 10;
 }
@@ -928,40 +928,35 @@ section {
     transform: scale(1.2);
 }
 
-.team .box-container .box:hover .share {
+.team .box-container .box:hover .icons {
     left: 0;
 }
 
-.team .box-container .box .share {
-    width: 7rem;
-    height: 47.5rem;
+.team .box-container .box .icons {
+    width: 100%;
+    height: 100%;
     position: absolute;
-    top: 1%;
-    left: -8.5rem;
+    left: -100%;
     z-index: 10;
-    margin: 2%;
-    margin-left: 3.5%;
     border-radius: 1.5rem;
-    background: #f0e8e4;
+    background: rgba(242, 242, 242, 0.7);
     display: flex;
-    flex-flow: column;
     justify-content: center;
     align-items: center;
-    gap: .7rem;
+    gap: 0.5rem;
 }
 
-.team .box-container .box .share a {
+.team .box-container .box .icons a {
     height: 5rem;
-    width: 5rem;
-    line-height: 5rem;
+    width: 15rem;
     font-size: 2.2rem;
+    font-weight: 500;
     color: #5e473e;
     background: #e1cec7;
     text-align: center;
-    border-radius: 50%;
 }
 
-.team .box-container .box .share a:hover {
+.team .box-container .box .icons a:hover {
     color: #e1cec7;
     background: #5e473e;
 }

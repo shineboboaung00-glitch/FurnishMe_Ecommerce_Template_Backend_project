@@ -35,105 +35,40 @@
 
     <section class="team">
 
-        <h1 class="title"> <span>our team</span> <a href="#">view all >></a></h1>
+        <h1 class="title"> <span>our team</span> <a href="team_create.php" class="btn add_new_service">Add New Team Member</a></h1>
 
         <div class="box-container">
 
-            <div class="box">
-                <div class="share">
-                    <a href="#" class="ri-facebook-fill"></a>
-                    <a href="#" class="ri-twitter-fill"></a>
-                    <a href="#" class="ri-pinterest-fill"></a>
-                    <a href="#" class="ri-instagram-fill"></a>
-                </div>
-                <div class="image">
-                    <img src="static/team-1.jpg" alt="">
-                </div>
-                <div class="user">
-                    <h3>john deo</h3>
-                    <span>designer</span>
-                </div>
-            </div>
+            <?php
 
-            <div class="box">
-                <div class="share">
-                    <a href="#" class="ri-facebook-fill"></a>
-                    <a href="#" class="ri-twitter-fill"></a>
-                    <a href="#" class="ri-pinterest-fill"></a>
-                    <a href="#" class="ri-instagram-fill"></a>
-                </div>
-                <div class="image">
-                    <img src="static/team-2.jpg" alt="">
-                </div>
-                <div class="user">
-                    <h3>john deo</h3>
-                    <span>designer</span>
-                </div>
-            </div>
+            $data = "SELECT * FROM team ORDER BY id ASC";
+            $read_data = $connection->query($data);
+            $counter = 1;
+            while (list($id, $name, $position, $image) = mysqli_fetch_array($read_data)) {
 
-            <div class="box">
-                <div class="share">
-                    <a href="#" class="ri-facebook-fill"></a>
-                    <a href="#" class="ri-twitter-fill"></a>
-                    <a href="#" class="ri-pinterest-fill"></a>
-                    <a href="#" class="ri-instagram-fill"></a>
-                </div>
-                <div class="image">
-                    <img src="static/team-3.jpg" alt="">
-                </div>
-                <div class="user">
-                    <h3>john deo</h3>
-                    <span>designer</span>
-                </div>
-            </div>
+            ?>
 
-            <div class="box">
-                <div class="share">
-                    <a href="#" class="ri-facebook-fill"></a>
-                    <a href="#" class="ri-twitter-fill"></a>
-                    <a href="#" class="ri-pinterest-fill"></a>
-                    <a href="#" class="ri-instagram-fill"></a>
+                <div class="box">
+                    <div class="icons">
+                        <a href="team_update.php?id=<?php echo $id; ?>" class="btn">Update</a>
+                        <a href="team_delete.php?id=<?php echo $id; ?>" class="btn">Delete</a>
+                    </div>
+                    <div class="image">
+                        <img src="static/<?php echo $image ?>">
+                    </div>
+                    <div class="user">
+                        <h3><?php echo $name ?></h3>
+                        <span><?php echo $position ?></span>
+                    </div>
                 </div>
-                <div class="image">
-                    <img src="static/team-4.jpg" alt="">
-                </div>
-                <div class="user">
-                    <h3>john deo</h3>
-                    <span>designer</span>
-                </div>
-            </div>
 
-            <div class="box">
-                <div class="share">
-                    <a href="#" class="ri-facebook-fill"></a>
-                    <a href="#" class="ri-twitter-fill"></a>
-                    <a href="#" class="ri-pinterest-fill"></a>
-                    <a href="#" class="ri-instagram-fill"></a>
-                </div>
-                <div class="image">
-                    <img src="static/team-5.jpg" alt="">
-                </div>
-                <div class="user">
-                    <h3>john deo</h3>
-                    <span>designer</span>
-                </div>
-            </div>
+            <?php
+                $counter++;
+            } ?>
 
-            <div class="box">
-                <div class="share">
-                    <a href="#" class="ri-facebook-fill"></a>
-                    <a href="#" class="ri-twitter-fill"></a>
-                    <a href="#" class="ri-pinterest-fill"></a>
-                    <a href="#" class="ri-instagram-fill"></a>
-                </div>
-                <div class="image">
-                    <img src="static/team-6.jpg" alt="">
-                </div>
-                <div class="user">
-                    <h3>john deo</h3>
-                    <span>designer</span>
-                </div>
-            </div>
+
+
+
 
         </div>
     </section>
