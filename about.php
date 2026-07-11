@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -13,7 +12,7 @@
 </head>
 
 <body>
-    
+
     <?php include('components/connection.php'); ?>
 
     <?php include('components/header.php'); ?>
@@ -56,30 +55,32 @@
 
     <section class="services">
 
-        <h1 class="title"> <span>our services</span> <a href="#">view all >></a></h1>
+        <h1 class="title"> <span>our services</span> <a href="service_create.php" class="btn add_new_service">Add New Service</a></h1>
 
         <div class="box-container">
 
-            <div class="box">
-                <img src="static/serv-1.png" alt="">
-                <h3>product selling</h3>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus id necessitatibus atque quod dicta. Esse perferendis sit vel quam deleniti voluptate. Provident molestias quibusdam recusandae quas illum ratione natus hic.</p>
-                <a href="#" class="btn">read more</a>
-            </div>
+            <?php
 
-            <div class="box">
-                <img src="static/serv-2.png" alt="">
-                <h3>product designing</h3>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus id necessitatibus atque quod dicta. Esse perferendis sit vel quam deleniti voluptate. Provident molestias quibusdam recusandae quas illum ratione natus hic.</p>
-                <a href="#" class="btn">read more</a>
-            </div>
+            $data = "SELECT * FROM service ORDER BY id ASC";
+            $read_data = $connection->query($data);
+            $counter = 1;
+            while (list($id, $title, $description, $image) = mysqli_fetch_array($read_data)) {
 
-            <div class="box">
-                <img src="static/serv-3.png" alt="">
-                <h3>24 / 7 support</h3>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus id necessitatibus atque quod dicta. Esse perferendis sit vel quam deleniti voluptate. Provident molestias quibusdam recusandae quas illum ratione natus hic.</p>
-                <a href="#" class="btn">read more</a>
-            </div>
+            ?>
+
+                <div class="box">
+                    <img src="static/<?php echo $image ?>"style="width: 100px; height: 100px; object-fit: contain;">
+                    <h3><?php echo $title ?></h3>
+                    <p><?php echo $description ?></p>
+                    <a href="service_update.php?id=<?php echo $id; ?>" class="btn">Update</a>
+                    <a href="service_delete.php?id=<?php echo $id; ?>" class="btn">Delete</a>
+                </div>
+
+            <?php
+                $counter++;
+            } ?>
+
+
 
         </div>
 

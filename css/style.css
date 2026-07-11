@@ -869,6 +869,15 @@ section {
     border-radius: 2rem;
 }
 
+.btn.add_new_service {
+    color: #faf7f6;
+}
+
+.btn.add_new_service:hover {
+    transform: translateX(-3px);
+    color: #faf7f6;
+}
+
 .services .box-container .box:hover {
     box-shadow: #0000001a 0px 4px 12px;
 }
