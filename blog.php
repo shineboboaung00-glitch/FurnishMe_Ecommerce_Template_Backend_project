@@ -41,111 +41,40 @@
     <!-- blog section start -->
 
     <section class="blog">
-        <h1 class="title"> <span>our blogs</span> <a href="#">view all >></a> </h1>
+        <h1 class="title"> <span>our blogs</span> <a href="blog_create.php" class="btn add_new_service">Add New Blog</a> </h1>
 
         <div class="box-container">
 
-            <div class="box">
-                <div class="image">
-                    <img src="image/blog-1.jpg" alt="">
-                </div>
-                <div class="content">
-                    <h3>blog title goes here ...</h3>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sed minus, iusto quasi laboriosam
-                        voluptatibus at esse maxime quod quae mollitia molestiae magnam aperiam aspernatur eius
-                        obcaecati enim eveniet quis fugit!</p>
-                    <a href="#" class="btn">read more</a>
-                    <div class="icons">
-                        <a href="#"> <i class="fas fa-calendar"></i> 21st may, 2023</a>
-                        <a href="#"> <i class="fas fa-user"></i> by admin</a>
-                    </div>
-                </div>
-            </div>
+            <?php
 
-            <div class="box">
-                <div class="image">
-                    <img src="image/blog-2.jpg" alt="">
-                </div>
-                <div class="content">
-                    <h3>blog title goes here ...</h3>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sed minus, iusto quasi laboriosam
-                        voluptatibus at esse maxime quod quae mollitia molestiae magnam aperiam aspernatur eius
-                        obcaecati enim eveniet quis fugit!</p>
-                    <a href="#" class="btn">read more</a>
-                    <div class="icons">
-                        <a href="#"> <i class="fas fa-calendar"></i> 21st may, 2023</a>
-                        <a href="#"> <i class="fas fa-user"></i> by admin</a>
-                    </div>
-                </div>
-            </div>
+            $data = "SELECT * FROM blog ORDER BY id ASC";
+            $read_data = $connection->query($data);
+            $counter = 1;
+            while (list($id, $title, $description, $date, $creator, $image) = mysqli_fetch_array($read_data)) {
 
-            <div class="box">
-                <div class="image">
-                    <img src="image/blog-3.jpg" alt="">
-                </div>
-                <div class="content">
-                    <h3>blog title goes here ...</h3>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sed minus, iusto quasi laboriosam
-                        voluptatibus at esse maxime quod quae mollitia molestiae magnam aperiam aspernatur eius
-                        obcaecati enim eveniet quis fugit!</p>
-                    <a href="#" class="btn">read more</a>
-                    <div class="icons">
-                        <a href="#"> <i class="fas fa-calendar"></i> 21st may, 2023</a>
-                        <a href="#"> <i class="fas fa-user"></i> by admin</a>
-                    </div>
-                </div>
-            </div>
+            ?>
 
-            <div class="box">
-                <div class="image">
-                    <img src="image/blog-4.jpg" alt="">
-                </div>
-                <div class="content">
-                    <h3>blog title goes here ...</h3>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sed minus, iusto quasi laboriosam
-                        voluptatibus at esse maxime quod quae mollitia molestiae magnam aperiam aspernatur eius
-                        obcaecati enim eveniet quis fugit!</p>
-                    <a href="#" class="btn">read more</a>
-                    <div class="icons">
-                        <a href="#"> <i class="fas fa-calendar"></i> 21st may, 2023</a>
-                        <a href="#"> <i class="fas fa-user"></i> by admin</a>
+                <div class="box">
+                    <div class="image">
+                        <img src="static/<?php echo $image ?>">
+                    </div>
+                    <div class="content">
+                        <h3><?php echo $title ?></h3>
+                        <p><?php echo $description ?></p>
+                        <a href="blog_update.php?id=<?php echo $id; ?>" class="btn">Update</a>
+                        <a href="blog_delete.php?id=<?php echo $id; ?>" class="btn">Delete</a>
+                        <div class="icons">
+                            <i class="fas fa-calendar"> <?php echo $date ?></i>
+                            <i class="fas fa-user"> by <?php echo $creator ?></i>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="box">
-                <div class="image">
-                    <img src="image/blog-5.jpg" alt="">
-                </div>
-                <div class="content">
-                    <h3>blog title goes here ...</h3>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sed minus, iusto quasi laboriosam
-                        voluptatibus at esse maxime quod quae mollitia molestiae magnam aperiam aspernatur eius
-                        obcaecati enim eveniet quis fugit!</p>
-                    <a href="#" class="btn">read more</a>
-                    <div class="icons">
-                        <a href="#"> <i class="fas fa-calendar"></i> 21st may, 2023</a>
-                        <a href="#"> <i class="fas fa-user"></i> by admin</a>
-                    </div>
-                </div>
-            </div>
+            <?php
+                $counter++;
+            } ?>
 
-            <div class="box">
-                <div class="image">
-                    <img src="image/blog-6.jpg" alt="">
-                </div>
-                <div class="content">
-                    <h3>blog title goes here ...</h3>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sed minus, iusto quasi laboriosam
-                        voluptatibus at esse maxime quod quae mollitia molestiae magnam aperiam aspernatur eius
-                        obcaecati enim eveniet quis fugit!</p>
-                    <a href="#" class="btn">read more</a>
-                    <div class="icons">
-                        <a href="#"> <i class="fas fa-calendar"></i> 21st may, 2023</a>
-                        <a href="#"> <i class="fas fa-user"></i> by admin</a>
-                    </div>
-                </div>
-            </div>
+
 
         </div>
     </section>
