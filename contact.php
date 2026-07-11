@@ -1,3 +1,23 @@
+
+<?php 
+include 'components/connection.php';
+
+if (isset($_POST['submit'])) {
+    $name = mysqli_real_escape_string($connection, $_POST['name']);
+    $phone = mysqli_real_escape_string($connection, $_POST['phone']);
+    $email = mysqli_real_escape_string($connection, $_POST['email']);
+    $massage = mysqli_real_escape_string($connection, $_POST['massage']);
+
+    $data = "INSERT INTO contact (name,phone,email,massage) VALUES ('$name','$phone','$email','$massage')";
+
+    $connection->query($data);
+    header('location: contact.php');
+    exit();
+}
+
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,8 +32,6 @@
 </head>
 
 <body>
-
-    <?php include('components/connection.php'); ?>
 
     <?php include('components/header.php'); ?>
 
@@ -33,17 +51,17 @@
     <!-- contact section start -->
 
     <div class="contact">
-        <form action="">
+        <form method="POST">
             <h3>get in touch</h3>
             <span>your name</span>
-            <input type="text" class="box">
+            <input type="text" name="name" class="box">
             <span>your number</span>
-            <input type="number" class="box">
+            <input type="number" name="phone" class="box">
             <span>your email</span>
-            <input type="email" class="box">
+            <input type="email" name="email" class="box">
             <span>your message</span>
-            <textarea cols="30" rows="10" class="box"></textarea>
-            <input type="submit" value="send message" class="btn">
+            <textarea cols="30" rows="10" name="massage" class="box"></textarea>
+            <button type="submit" name="submit" class="btn">Send Message</button>
         </form>
 
         <iframe class="map"
