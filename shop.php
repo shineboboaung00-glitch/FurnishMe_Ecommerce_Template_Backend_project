@@ -72,189 +72,41 @@
 
         <div class="box-container">
 
-            <div class="box">
-                <div class="icons">
-                    <a href="#" class="ri-shopping-cart-line"></a>
-                    <a href="#" class="ri-heart-line"></a>
-                    <a href="#" class="ri-eye-line"></a>
-                </div>
-                <div class="image">
-                    <img src="static/product-1.png" alt="">
-                </div>
-                <div class="content">
-                    <div class="price">$140.00</div>
-                    <h3>modern furniture</h3>
-                    <div class="stars">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <span> (50) </span>
-                    </div>
-                </div>
-            </div>
+            <?php
 
-            <div class="box">
-                <div class="icons">
-                    <a href="#" class="ri-shopping-cart-line"></a>
-                    <a href="#" class="ri-heart-line"></a>
-                    <a href="#" class="ri-eye-line"></a>
-                </div>
-                <div class="image">
-                    <img src="static/product-2.png" alt="">
-                </div>
-                <div class="content">
-                    <div class="price">$140.00</div>
-                    <h3>modern furniture</h3>
-                    <div class="stars">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <span> (50) </span>
-                    </div>
-                </div>
-            </div>
+            $data = "SELECT * FROM product ORDER BY id ASC";
+            $read_data = $connection->query($data);
+            $counter = 1;
+            while (list($id, $name, $price, $quantity, $image) = mysqli_fetch_array($read_data)) {
 
-            <div class="box">
-                <div class="icons">
-                    <a href="#" class="ri-shopping-cart-line"></a>
-                    <a href="#" class="ri-heart-line"></a>
-                    <a href="#" class="ri-eye-line"></a>
-                </div>
-                <div class="image">
-                    <img src="static/product-3.png" alt="">
-                </div>
-                <div class="content">
-                    <div class="price">$140.00</div>
-                    <h3>modern furniture</h3>
-                    <div class="stars">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <span> (50) </span>
-                    </div>
-                </div>
-            </div>
+            ?>
 
-            <div class="box">
-                <div class="icons">
-                    <a href="#" class="ri-shopping-cart-line"></a>
-                    <a href="#" class="ri-heart-line"></a>
-                    <a href="#" class="ri-eye-line"></a>
-                </div>
-                <div class="image">
-                    <img src="static/product-4.png" alt="">
-                </div>
-                <div class="content">
-                    <div class="price">$140.00</div>
-                    <h3>modern furniture</h3>
-                    <div class="stars">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <span> (50) </span>
+                <div class="box">
+                    <div class="icons">
+                        <a href="product_update.php?id=<?php echo $id; ?>" class="btn">Update</a>
+                        <a href="product_delete.php?id=<?php echo $id; ?>" class="btn">Delete</a>
+                    </div>
+                    <div class="image">
+                        <img src="static/<?php echo $image ?>">
+                    </div>
+                    <div class="content">
+                        <div class="price"><?php echo $price ?></div>
+                        <h3><?php echo $name ?></h3>
+                        <div class="stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <span><?php echo $quantity ?></span>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="box">
-                <div class="icons">
-                    <a href="#" class="ri-shopping-cart-line"></a>
-                    <a href="#" class="ri-heart-line"></a>
-                    <a href="#" class="ri-eye-line"></a>
-                </div>
-                <div class="image">
-                    <img src="static/product-5.png" alt="">
-                </div>
-                <div class="content">
-                    <div class="price">$140.00</div>
-                    <h3>modern furniture</h3>
-                    <div class="stars">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <span> (50) </span>
-                    </div>
-                </div>
-            </div>
+            <?php
+                $counter++;
+            } ?>
 
-            <div class="box">
-                <div class="icons">
-                    <a href="#" class="ri-shopping-cart-line"></a>
-                    <a href="#" class="ri-heart-line"></a>
-                    <a href="#" class="ri-eye-line"></a>
-                </div>
-                <div class="image">
-                    <img src="static/product-6.png" alt="">
-                </div>
-                <div class="content">
-                    <div class="price">$140.00</div>
-                    <h3>modern furniture</h3>
-                    <div class="stars">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <span> (50) </span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="box">
-                <div class="icons">
-                    <a href="#" class="ri-shopping-cart-line"></a>
-                    <a href="#" class="ri-heart-line"></a>
-                    <a href="#" class="ri-eye-line"></a>
-                </div>
-                <div class="image">
-                    <img src="static/product-7.png" alt="">
-                </div>
-                <div class="content">
-                    <div class="price">$140.00</div>
-                    <h3>modern furniture</h3>
-                    <div class="stars">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <span> (50) </span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="box">
-                <div class="icons">
-                    <a href="#" class="ri-shopping-cart-line"></a>
-                    <a href="#" class="ri-heart-line"></a>
-                    <a href="#" class="ri-eye-line"></a>
-                </div>
-                <div class="image">
-                    <img src="static/product-8.png" alt="">
-                </div>
-                <div class="content">
-                    <div class="price">$140.00</div>
-                    <h3>modern furniture</h3>
-                    <div class="stars">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <span> (50) </span>
-                    </div>
-                </div>
-            </div>
 
 
 

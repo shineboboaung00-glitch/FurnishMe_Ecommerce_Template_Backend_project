@@ -1,15 +1,3 @@
-<?php 
-include 'components/connection.php'
-
-if (isset())
-
-
-
-?>
-
-
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -25,15 +13,7 @@ if (isset())
 </head>
 
 <body>
-    <?php
-    // session_start();
-
-    // if (!isset($_SESSION['username'])) {
-    //     header('Location: login.php');
-    //     exit();
-    // }
-    ?>
-
+    
     <?php include('components/connection.php'); ?>
 
     <?php include('components/header.php'); ?>

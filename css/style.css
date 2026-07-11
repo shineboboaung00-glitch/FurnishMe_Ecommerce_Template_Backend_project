@@ -756,11 +756,8 @@ section {
 .products .box-container .box .icons a {
     text-align: center;
     height: 5rem;
-    line-height: 5rem;
-    width: 5rem;
     background: #e1cec7;
     color: #5e473e;
-    border-radius: 50%;
     font-size: 2rem;
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
 }

@@ -1,3 +1,27 @@
+<?php 
+include 'components/connection.php';
+
+if (isset($_POST['submit'])) {
+    $name =mysqli_real_escape_string($connection, $_POST['name']);
+    $price =mysqli_real_escape_string($connection, $_POST['price']);
+    $quantity =mysqli_real_escape_string($connection, $_POST['quantity']);
+    $image = $_FILES['image']['name'];
+
+    $data = "INSERT INTO product (name,price,quantity,image) VALUES ('$name','$price','$quantity','$image')";
+
+    if (!empty($image)) {
+        move_uploaded_file($_FILES['image']['tap_name'], 'static/' .$image);
+    }
+
+    $connection->query($data);
+    header('location: shop.php');
+    exit();
+}
+
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -18,14 +42,14 @@
     <!-- register form start  -->
 
     <div class="register-form">
-        <form method="POST">
+        <form method="POST" enctype="multipart/form-data">
             <h3>Product Create Form</h3>
 
-            <input type="text" placeholder="Enter your product name" class="box" required>
-            <input type="number" placeholder="Enter your price" name="email" class="box" required>
-            <input type="number" placeholder="Enter your quantity" class="box" required>
-            <input type="file" class="box" required>
-            <input type="submit" value="Create Now" class="btn">
+            <input type="text" name="name" placeholder="Enter your product name" class="box" required>
+            <input type="number" name="price" placeholder="Enter your price" class="box" required>
+            <input type="number" name="quantity" placeholder="Enter your quantity" class="box" required>
+            <input type="file" name="image" class="box" required>
+            <button type="submit" name="submit" class="btn">Create Now</button>
         </form>
     </div>
 
