@@ -64,9 +64,8 @@ if (isset($_POST['submit'])) {
             <button type="submit" name="submit" class="btn">Send Message</button>
         </form>
 
-        <iframe class="map"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7635.167591506357!2d96.06651810000001!3d16.896471100000003!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30c195d9e8dad87d%3A0x27a5d8b44f026ac8!2z4YCQ4YCU4YC64YCW4YCt4YCv4YC44YCU4YCK4YC64YC44YCh4YCt4YCZ4YC64YCb4YCsIOGAoeGAleGAreGAr-GAhOGAuuGAuCjhgYEpIOGAnuGAr-GAtuGAuOGAmOGAruGAuOGAguGAreGAkOGAug!5e0!3m2!1sen!2smm!4v1727112860930!5m2!1sen!2smm"
-            allowfullscreen="" loading="lazy"></iframe>
+            <iframe class="map" src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d1910.0187923655158!2d96.23546253852871!3d16.774805596002924!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMTbCsDQ2JzI5LjMiTiA5NsKwMTQnMTIuMyJF!5e0!3m2!1sen!2smm!4v1784382014457!5m2!1sen!2smm" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+                
     </div>
 
     <!-- contact section end -->
