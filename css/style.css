@@ -694,6 +694,12 @@ section {
     background: #e1cec7;
 }
 
+.error_warning {
+    color: red !important;
+    font-size: 10.5px !important;
+    font-weight: bold;
+}
+
 .category .box-container .box:hover {
     box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
 }
