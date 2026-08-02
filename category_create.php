@@ -1,34 +1,29 @@
 <?php
-include 'components/connection.php';
 
-$error = '';
+require_once 'components/connection.php';
 
-if (isset($_POST['submit'])) {
-    $name = mysqli_real_escape_string($connection, $_POST['name']);
-    $image = $_FILES['image']['name'];
+require_once 'classes/category.php';
 
-    if (empty($name)) {
-        $error = "Name is required";
-    }
-    else if (strlen($name) < 5 || strlen($name) > 15) {
-        $error = "Name must be between 5 and 15 characters long.";
-    } 
-    else {
-        if (!empty($image)) {
-            move_uploaded_file($_FILES['image']['tmp_name'], 'static/' . $image);
-        }
-        $data = "INSERT INTO category (name,image) VALUES ('$name','$image')";
+$database = new Database();
+$db = $database->getConnection();
+$category = new Category($db);
 
-        if ($connection->query($data)) {
-            header('Location: shop.php');
-            exit();
-        }
-        else {
-            $error = "Database Error: " . $connection->error;
+$errors = [];
+$message = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $result = $category->create($_POST, $_FILES);
+
+    if ($result['status']) {
+        header('Location: shop.php');
+        exit();
+    } else {
+        $errors = $result['errors'] ?? [];
+        if (isset($result['message'])) {
+            $message = $result['message'];
         }
     }
 }
-
 
 ?>
 
@@ -50,26 +45,39 @@ if (isset($_POST['submit'])) {
     <?php include('components/header.php'); ?>
     <?php include('components/navbar.php'); ?>
 
-    <!-- register form start  -->
+    <!-- Category form start  -->
 
     <div class="register-form">
 
         <form method="POST" enctype="multipart/form-data">
             <h3>Category Create Form</h3>
 
-            <?php if (!empty($error)): ?>
-                <p class="error_warning"><?php echo $error; ?></p>
+            <!-- Database Error -->
+            <?php if (!empty($message)): ?>
+                <p style="color: red; text-align: center; font-size: 1.5rem; margin-bottom: 1rem;">
+                    <?php echo htmlspecialchars($message); ?>
+                </p>
             <?php endif; ?>
 
-            <input type="text" name="name" placeholder="Enter your category name" class="box" required>
-            <input type="file" name="image" class="box" required>
+            <!-- Title Input Field -->
+            <input type="text" name="name" placeholder="Enter your category name" class="box" value="<?php echo isset($_POST['name']) ? htmlspecialchars($_POST['name']) : ''; ?>">
+            <?php if (isset($errors['name'])): ?>
+                <span style="color: red; font-size: 1.2rem; display: block; margin-top: -0.5rem; margin-bottom: 0.5rem;"><?php echo htmlspecialchars($errors['name']); ?></span>
+            <?php endif; ?>
+
+            <!-- Image Input Field -->
+            <input type="file" name="image" class="box" accept="image/*">
+            <?php if (isset($errors['image'])): ?>
+                <span style="color: red; font-size: 1.2rem; display: block; margin-top: -0.5rem; margin-bottom: 0.5rem;"><?php echo htmlspecialchars($errors['image']); ?></span>
+            <?php endif; ?>
+
             <button type="submit" name="submit" class="btn">Create Now</button>
 
         </form>
 
     </div>
 
-    <!-- register form end  -->
+    <!-- Category form end  -->
 
     <?php include('components/footer.php'); ?>
     <?php include('components/js.php'); ?>

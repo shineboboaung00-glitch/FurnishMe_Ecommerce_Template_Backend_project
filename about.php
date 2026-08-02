@@ -13,7 +13,6 @@
 
 <body>
 
-    <?php include('components/connection.php'); ?>
 
     <?php include('components/header.php'); ?>
 
@@ -59,28 +58,14 @@
 
         <div class="box-container">
 
-            <?php
-
-            $data = "SELECT * FROM service ORDER BY id ASC";
-            $read_data = $connection->query($data);
-            $counter = 1;
-            while (list($id, $title, $description, $image) = mysqli_fetch_array($read_data)) {
-
-            ?>
-
                 <div class="box">
-                    <img src="static/<?php echo $image ?>"style="width: 100px; height: 100px; object-fit: contain;">
-                    <h3><?php echo $title ?></h3>
-                    <p><?php echo $description ?></p>
-                    <a href="service_update.php?id=<?php echo $id; ?>" class="btn">Update</a>
-                    <a href="service_delete.php?id=<?php echo $id; ?>" class="btn">Delete</a>
+                    <img style="width: 100px; height: 100px; object-fit: contain;">
+                    <h3></h3>
+                    <h3></h3>
+                    <p></p>
+                    <a href="service_update.php?id=" class="btn">Update</a>
+                    <a href="service_delete.php?id="class="btn">Delete</a>
                 </div>
-
-            <?php
-                $counter++;
-            } ?>
-
-
 
         </div>
 

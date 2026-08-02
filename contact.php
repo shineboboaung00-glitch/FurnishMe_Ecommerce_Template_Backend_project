@@ -1,23 +1,4 @@
 
-<?php 
-include 'components/connection.php';
-
-if (isset($_POST['submit'])) {
-    $name = mysqli_real_escape_string($connection, $_POST['name']);
-    $phone = mysqli_real_escape_string($connection, $_POST['phone']);
-    $email = mysqli_real_escape_string($connection, $_POST['email']);
-    $massage = mysqli_real_escape_string($connection, $_POST['massage']);
-
-    $data = "INSERT INTO contact (name,phone,email,massage) VALUES ('$name','$phone','$email','$massage')";
-
-    $connection->query($data);
-    header('location: contact.php');
-    exit();
-}
-
-
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 

@@ -1,8 +1,23 @@
 <?php
-$servername = "localhost";
-$username = "root";
-$password = ""; // WAMP မှာ default password ကို ဖန်တီးထားလျှင် ထည့်ပါ။
-$database = "final_db"; // သင့် database name အရင်ဖန်တီးထားဖို့လိုပါတယ်
 
-// Create connection
-$connection = new mysqli($servername, $username, $password, $database);
+class database
+{
+    private $server_name = "localhost";
+    private $user_name = "root";
+    private $password = ""; 
+    private $database = "final_db";
+    private $connection;
+
+    public function getConnection()
+    {
+        $this->connection = null;
+
+        try {
+            $this->connection = new PDO("mysql:host=" . $this->server_name . ";dbname=" . $this->database . ";charset=utf8mb4", $this->user_name, $this->password);
+            $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch (PDOException $exception) {
+            echo "Connection Error: " . $exception->getMessage();
+        }
+        return $this->connection;
+    }
+}

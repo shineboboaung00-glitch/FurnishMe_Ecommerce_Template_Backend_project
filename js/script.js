@@ -44,3 +44,16 @@ function prev(){
     index = (index - 1 + slides.length) % slides.length;
     slides[index].classList.add('active');
 }
+
+// ===============================================================================
+
+// Delete Form 
+
+function openDeleteModal(deleteUrl) {
+    document.getElementById('delete_btn').setAttribute('href', deleteUrl);
+    document.getElementById('delete_container').style.display = 'flex';
+}
+
+function closeModal() {
+    document.getElementById('delete_container').style.display = 'none';
+}

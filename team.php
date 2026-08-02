@@ -13,7 +13,6 @@
 
 <body>
 
-    <?php include('components/connection.php'); ?>
 
     <?php include('components/header.php'); ?>
 
@@ -39,35 +38,19 @@
 
         <div class="box-container">
 
-            <?php
-
-            $data = "SELECT * FROM team ORDER BY id ASC";
-            $read_data = $connection->query($data);
-            $counter = 1;
-            while (list($id, $name, $position, $image) = mysqli_fetch_array($read_data)) {
-
-            ?>
-
                 <div class="box">
                     <div class="icons">
-                        <a href="team_update.php?id=<?php echo $id; ?>" class="btn">Update</a>
-                        <a href="team_delete.php?id=<?php echo $id; ?>" class="btn">Delete</a>
+                        <a href="team_update.php?id=" class="btn">Update</a>
+                        <a href="team_delete.php?id=" class="btn">Delete</a>
                     </div>
                     <div class="image">
-                        <img src="static/<?php echo $image ?>">
+                        <img src="static/">
                     </div>
                     <div class="user">
-                        <h3><?php echo $name ?></h3>
-                        <span><?php echo $position ?></span>
+                        <h3></h3>
+                        <span></span>
                     </div>
                 </div>
-
-            <?php
-                $counter++;
-            } ?>
-
-
-
 
 
         </div>

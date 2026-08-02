@@ -1,5 +1,25 @@
-<!-- footer section start  -->
+<?php
+require_once 'components/connection.php';
 
+if (isset($_POST['submit']) && !empty($_POST['email'])) {
+    
+    $database = new Database();
+    $db = $database->getConnection();
+
+    $email = htmlspecialchars(strip_tags($_POST['email']));
+
+    $query = "INSERT INTO newsletter (email) VALUES (:email)";
+    $stmt = $db->prepare($query);
+    $stmt->bindParam(':email', $email);
+
+    if ($stmt->execute()) {
+        header('Location: contact.php');
+        exit();
+    }
+}
+?>
+
+<!-- footer section start  -->
 <section class="footer">
     <div class="box-container">
 
@@ -31,29 +51,11 @@
             <a href="#"> <i class="ri-pinterest-fill"></i> pinterest </a>
         </div>
 
-
-        <?php
-        include 'components/connection.php';
-
-        if (isset($_POST['submit'])) {
-            $email = mysqli_real_escape_string($connection, $_POST['email']);
-            $data = "INSERT INTO newsletter (email) VALUES ('$email')";
-
-            $connection->query($data);
-            header('location: contact.php');
-            exit();
-        }
-
-
-        ?>
-
-
-
         <div class="box">
             <h3>newsletter</h3>
             <p>subscribe for latest updates</p>
             <form method="POST">
-                <input type="email" name="email" placeholder="enter your email">
+                <input type="email" name="email" placeholder="enter your email" required>
                 <button type="submit" name="submit" class="btn">Send Message</button>
             </form>
         </div>

@@ -1,3 +1,27 @@
+<?php
+require_once 'components/connection.php';
+
+require_once 'classes/category.php';
+
+// Database & Category instances
+$database = new Database();
+$db = $database->getConnection();
+$category = new Category($db);
+// Delete Logic
+if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id'])) {
+    $category->id = $_GET['id'];
+    if ($category->delete()) {
+        header('Location: shop.php');
+        exit();
+    }
+}
+
+//Read Category
+$category_read_data = $category->read();
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,8 +36,6 @@
 </head>
 
 <body>
-
-    <?php include('components/connection.php'); ?>
 
     <?php include('components/header.php'); ?>
 
@@ -33,31 +55,36 @@
 
     <section class="category">
         <h1 class="title"> <span>our categories</span> <a href="category_create.php" class="btn title-btn">Add new category</a> </h1>
-
         <div class="box-container">
 
             <?php
 
-            $data = "SELECT * FROM category ORDER BY id ASC";
-            $read_data = $connection->query($data);
-            $counter = 1;
-            while (list($id, $name, $image) = mysqli_fetch_array($read_data)) {
+            if ($category_read_data && $category_read_data->rowCount() > 0) {
+                while ($data = $category_read_data->fetch(PDO::FETCH_ASSOC)) {
+                    $id = $data['id'];
+                    $name = $data['name'];
+                    $image = $data['image'];
 
             ?>
-
-                <div class="box">
-                    <a href="#">
-                        <img src="static/<?php echo $image ?>">
-                        <h3><?php echo $name ?></h3>
-                    </a>
-                    <a href="category_update.php?id=<?php echo $id; ?>" class="btn">Update</a>
-                    <a href="category_delete.php?id=<?php echo $id; ?>" class="btn">Delete</a>
-                </div>
-
+                    <div class="box">
+                        <a href="#">
+                            <img src="uploads/<?php echo htmlspecialchars($image); ?>" alt="<?php echo htmlspecialchars($name); ?>">
+                            <h3><?php echo htmlspecialchars($name); ?></h3>
+                        </a>
+                        <a href="category_update.php?id=<?php echo $id; ?>" class="btn">Update</a>
+                        <!-- ပြင်ဆင်ပြီး Delete Link -->
+                        <a href="javascript:void(0);"
+                            onclick="openDeleteModal('shop.php?action=delete&id=<?php echo $data['id']; ?>')"
+                            class="btn">Delete</a>
+                    </div>
             <?php
-                $counter++;
-            } ?>
+                }
+            } else {
+                echo "<p style='font-size:1.5rem; text-align:center;'>No products found.</p>";
+            }
+            ?>
 
+            <?php include('components/delete.php') ?>
 
         </div>
     </section>
@@ -72,43 +99,27 @@
 
         <div class="box-container">
 
-            <?php
-
-            $data = "SELECT * FROM product ORDER BY id ASC";
-            $read_data = $connection->query($data);
-            $counter = 1;
-            while (list($id, $name, $price, $quantity, $image) = mysqli_fetch_array($read_data)) {
-
-            ?>
-
-                <div class="box">
-                    <div class="icons">
-                        <a href="product_update.php?id=<?php echo $id; ?>" class="btn">Update</a>
-                        <a href="product_delete.php?id=<?php echo $id; ?>" class="btn">Delete</a>
-                    </div>
-                    <div class="image">
-                        <img src="static/<?php echo $image ?>">
-                    </div>
-                    <div class="content">
-                        <div class="price"><?php echo $price ?></div>
-                        <h3><?php echo $name ?></h3>
-                        <div class="stars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <span><?php echo $quantity ?></span>
-                        </div>
+            <div class="box">
+                <div class="icons">
+                    <a href="product_update.php?id=" class="btn">Update</a>
+                    <a href="product_delete.php?id=" class="btn">Delete</a>
+                </div>
+                <div class="image">
+                    <img src="static/">
+                </div>
+                <div class="content">
+                    <div class="price"></div>
+                    <h3></h3>
+                    <div class="stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <span></span>
                     </div>
                 </div>
-
-            <?php
-                $counter++;
-            } ?>
-
-
-
+            </div>
 
         </div>
     </section>

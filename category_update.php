@@ -1,40 +1,38 @@
 <?php
-include 'components/connection.php';
+require_once 'components/connection.php';
+require_once 'classes/category.php';
 
-if (isset($_GET['id'])) {
-    $id = intval($_GET['id']);
-    $data = "SELECT * FROM category WHERE id=$id";
-    $read_data = $connection->query($data);
-    $old_data = mysqli_fetch_array($read_data);
-    $old_image = $old_data['image'];
+$database = new Database();
+$db = $database->getConnection();
+$category = new Category($db);
 
-    if (isset($_POST['submit'])) {
-        $name = mysqli_real_escape_string($connection, $_POST['name']);
-
-
-        $new_image = $_FILES['image']['name'];
-
-        if (!empty($new_image)) {
-            $image = $new_image;
-            if (file_exists('static/' . $old_image) && !empty($old_image)) {
-                unlink('static/' . $old_image);
-            }
-            move_uploaded_file($_FILES['image']['tmp_name'], 'static/' . $image);
-        } else {
-            $image = $old_image;
-        }
-
-        $update_date = "UPDATE category SET name = '$name' , image = '$image' WHERE id='$id'";
-        $connection->query($update_date);
-        header('location: shop.php');
-        exit();
-    }
-} else {
-    header('location: shop.php');
+if (!isset($_GET['id']) || empty($_GET['id'])) {
+    header('Location: shop.php');
     exit();
 }
 
+$category->id = $_GET['id'];
+$old_data = $category->readone();
 
+if (!$old_data) {
+    header('Location: shop.php');
+    exit();
+}
+
+$errors = [];
+$message = '';
+
+if (isset($_POST['update'])) {
+    $update_data = $category->update($_POST, $_FILES, $old_data['image']);
+
+    if ($update_data['status'] === true) {
+        header('Location: shop.php');
+        exit();
+    } else {
+        $errors = $update_data['errors'] ?? [];
+        $message = $update_data['message'] ?? '';
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -54,25 +52,48 @@ if (isset($_GET['id'])) {
     <?php include('components/header.php'); ?>
     <?php include('components/navbar.php'); ?>
 
-    <!-- register form start  -->
+    <!-- Category Update form start  -->
 
     <div class="register-form">
 
         <form method="POST" enctype="multipart/form-data">
             <h3>Category Edit Form</h3>
 
-            <input type="text" name="name" placeholder="Enter your category name" value="<?php echo htmlspecialchars($old_data['name']) ?>" class="box" required>
-            <input type="file" name="image" class="box">
-            <?php if ($old_data['image']): ?>
-                <img src="static/<?php echo $old_data['image'] ?>" style="width: 100px; margin-top: 10px; ">
+            <!-- Database Error -->
+            <?php if (!empty($message)): ?>
+                <p style="color: red; text-align: center; font-size: 1.5rem; margin-bottom: 1rem;">
+                    <?php echo htmlspecialchars($message); ?>
+                </p>
             <?php endif; ?>
-            <button type="submit" name="submit" class="btn">Update Now</button>
+
+            <!-- Title Input Field -->
+            <input type="text" name="name" placeholder="Enter your category name" class="box" value="<?php echo htmlspecialchars($_POST['name'] ?? $old_data['name'] ?? ''); ?>">
+            <?php if (isset($errors['name'])): ?>
+                <span style="color: red; font-size: 1.2rem; display: block; margin-top: -0.5rem; margin-bottom: 0.5rem;"><?php echo htmlspecialchars($errors['name']); ?></span>
+            <?php endif; ?>
+
+            <!-- Current Image Preview -->
+            <?php if (!empty($old_data['image'])): ?>
+                <div style="margin-bottom: 1rem;">
+                    <p>Current Image:</p>
+                    <img src="uploads/<?php echo htmlspecialchars($old_data['image']); ?>" width="100" style="border-radius: 5px;">
+                </div>
+            <?php endif; ?>
+
+            <!-- Image Input Field -->
+            <label>New Image (Optional):</label>
+            <input type="file" name="image" class="box" accept="image/*">
+            <?php if (isset($errors['image'])): ?>
+                <span style="color: red; font-size: 1.2rem; display: block; margin-top: -0.5rem; margin-bottom: 0.5rem;"><?php echo htmlspecialchars($errors['image']); ?></span>
+            <?php endif; ?>
+
+            <button type="submit" name="update" class="btn">Update Now</button>
 
         </form>
 
     </div>
 
-    <!-- register form end  -->
+    <!-- Category Update form end  -->
 
     <?php include('components/footer.php'); ?>
     <?php include('components/js.php'); ?>
