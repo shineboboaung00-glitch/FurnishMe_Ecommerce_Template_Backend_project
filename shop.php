@@ -1,26 +1,22 @@
 <?php
-require_once 'components/connection.php';
-
-require_once 'classes/category.php';
-
-// Database & Category instances
-$database = new Database();
-$db = $database->getConnection();
-$category = new Category($db);
-// Delete Logic
-if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id'])) {
-    $category->id = $_GET['id'];
-    if ($category->delete()) {
-        header('Location: shop.php');
-        exit();
-    }
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
 }
 
-//Read Category
-$category_read_data = $category->read();
+require_once __DIR__ . '/components/connection.php';
+require_once __DIR__ . '/classes/category.php';
 
+$database = new Database();
+$db = $database->getConnection();
+
+$category_object = new Category($db);
+$categories = $category_object->read();
+
+$form_errors = $_SESSION['form_errors'] ?? null;
+$old_input = $_SESSION['old_input'] ?? null;
+
+unset($_SESSION['form_errors'], $_SESSION['old_input']);
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -33,103 +29,92 @@ $category_read_data = $category->read();
 
     <?php include('components/css.php'); ?>
 
+    <script>
+        window.FORM_ERRORS = <?php echo json_encode($form_errors); ?>;
+        window.OLD_INPUT = <?php echo json_encode($old_input); ?>;
+    </script>
 </head>
 
 <body>
 
     <?php include('components/header.php'); ?>
-
     <?php include('components/navbar.php'); ?>
 
     <!-- heading section start -->
-
     <section class="heading">
         <h3>our shop</h3>
         <p><a href="index.php">home</a> / <span>shop</span></p>
     </section>
 
-    <!-- heading section end -->
-
-
     <!-- category section start -->
-
     <section class="category">
-        <h1 class="title"> <span>our categories</span> <a href="category_create.php" class="btn title-btn">Add new category</a> </h1>
+        <h1 class="title">
+            <span>our categories</span>
+            <button onclick="openDynamicModal({
+                module: 'categories',
+                action: 'create',
+                title: 'Add New Category',
+                fields: [
+                    { name: 'name', label: 'Category Name', type: 'text', placeholder: 'Enter category name' },
+                    { name: 'image', label: 'Category Image', type: 'file' }
+                ]
+            })" class="btn title-btn">Add new category</button>
+        </h1>
+
         <div class="box-container">
-
             <?php
-
-            if ($category_read_data && $category_read_data->rowCount() > 0) {
-                while ($data = $category_read_data->fetch(PDO::FETCH_ASSOC)) {
-                    $id = $data['id'];
-                    $name = $data['name'];
-                    $image = $data['image'];
-
+            if ($categories && $categories->rowCount() > 0):
+                while ($row = $categories->fetch(PDO::FETCH_ASSOC)):
+                    $id = $row['id'];
+                    $name = htmlspecialchars($row['name'], ENT_QUOTES, 'UTF-8');
+                    $js_safe_name = addslashes($name);
+                    $image = $row['image'] ? 'uploads/' . $row['image'] : 'static/default.jpg';
             ?>
                     <div class="box">
                         <a href="#">
-                            <img src="uploads/<?php echo htmlspecialchars($image); ?>" alt="<?php echo htmlspecialchars($name); ?>">
-                            <h3><?php echo htmlspecialchars($name); ?></h3>
+                            <img src="<?php echo $image; ?>" alt="<?php echo $name; ?>">
+                            <h3><?php echo $name; ?></h3>
                         </a>
-                        <a href="category_update.php?id=<?php echo $id; ?>" class="btn">Update</a>
-                        <!-- ပြင်ဆင်ပြီး Delete Link -->
-                        <a href="javascript:void(0);"
-                            onclick="openDeleteModal('shop.php?action=delete&id=<?php echo $data['id']; ?>')"
-                            class="btn">Delete</a>
+
+                        <button onclick="openDynamicModal({
+                            module: 'categories',
+                            action: 'update',
+                            title: 'Edit Category',
+                            fields: [
+                                { name: 'name', label: 'Category Name', type: 'text' },
+                                { name: 'image', label: 'New Image (Optional)', type: 'file' }
+                            ],
+                            data: { 
+                                id: '<?php echo $id; ?>', 
+                                name: '<?php echo $js_safe_name; ?>',
+                                old_image: '<?php echo $row['image']; ?>' 
+                            }
+                        })" class="btn">Update</button>
+
+                        <button onclick="openDynamicModal({
+                            module: 'categories',
+                            action: 'delete',
+                            title: 'Delete Category',
+                            message: 'Are you sure you want to delete <?php echo $js_safe_name; ?>?',
+                            data: { id: '<?php echo $id; ?>' }
+                        })" class="btn">Delete</button>
                     </div>
-            <?php
-                }
-            } else {
-                echo "<p style='font-size:1.5rem; text-align:center;'>No products found.</p>";
-            }
-            ?>
-
-            <?php include('components/delete.php') ?>
-
+                <?php
+                endwhile;
+            else:
+                ?>
+                <p class="no_found_warnning">No categories found!</p>
+            <?php endif; ?>
         </div>
     </section>
 
-    <!-- category section end -->
-
-
-    <!-- products section start -->
-
-    <section class="products">
-        <h1 class="title"> <span>our products</span> <button onclick="window.location.href='product_create.php'" class="btn title-btn">Add new product</button></h1>
-
-        <div class="box-container">
-
-            <div class="box">
-                <div class="icons">
-                    <a href="product_update.php?id=" class="btn">Update</a>
-                    <a href="product_delete.php?id=" class="btn">Delete</a>
-                </div>
-                <div class="image">
-                    <img src="static/">
-                </div>
-                <div class="content">
-                    <div class="price"></div>
-                    <h3></h3>
-                    <div class="stars">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <span></span>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- products section end -->
+    <!-- Dynamic Form Modal -->
+    <?php include('components/dynamic_form.php'); ?>
 
     <?php include('components/footer.php'); ?>
-
     <?php include('components/js.php'); ?>
 
-</body>
+    <script src="js/script.js"></script>
 
+</body>
 </html>

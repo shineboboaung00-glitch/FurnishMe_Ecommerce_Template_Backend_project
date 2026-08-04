@@ -718,8 +718,10 @@ section {
     color: #5e473e;
 }
 
+/* ========================================================================== */
+
 .register-form.delete_container {
-    display: none ;
+    display: none;
     position: fixed;
     z-index: 1000;
     left: 0;
@@ -739,6 +741,19 @@ section {
     width: 350px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
+
+/* Warning  */
+
+.no_found_warnning {
+    font-size: 1.5rem;
+    background-color: #f0e8e4;
+    padding: 1.5rem;
+    text-align: center;
+    border-radius: 3rem;
+    font-weight: bold;
+    color: #845f51;
+}
+
 /* ---- product section ---- */
 
 .products .box-container {

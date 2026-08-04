@@ -118,6 +118,7 @@ class Category
         return $read_data->execute();
     }
 
+    // 5.Data Checking 
     private function vaildateInput($data)
     {
 
