@@ -111,10 +111,45 @@ unset($_SESSION['form_errors'], $_SESSION['old_input']);
     <!-- Dynamic Form Modal -->
     <?php include('components/dynamic_form.php'); ?>
 
+    <!-- products section start -->
+
+    <section class="products">
+        <h1 class="title"> <span>our products</span> <button onclick="window.location.href='product_create.php'" class="btn title-btn">Add new product</button></h1>
+
+        <div class="box-container">
+
+            <div class="box">
+                <div class="icons">
+                    <a href="product_update.php?id=" class="btn">Update</a>
+                    <a href="shop.php?action=delete&id=" onclick="">Delete</a>
+                </div>
+                <div class="image">
+                    <img src="uploads/" alt="">
+                </div>
+                <div class="content">
+                    <div class="price">$</div>
+                    <h3></h3>
+                    <div class="stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- products section end -->
+
     <?php include('components/footer.php'); ?>
     <?php include('components/js.php'); ?>
 
     <script src="js/script.js"></script>
 
 </body>
+
 </html>

@@ -136,7 +136,6 @@ function openDynamicModal(config) {
         }
     }
 
-    // တကယ်လို့ Database အဆင်မပြေတာမျိုး/အထွေထွေ General Error ရှိပါက ထိပ်ဆုံးမှာ ပြသရန်
     if (config.globalError && globalErrorMsg) {
         globalErrorMsg.innerText = config.globalError;
         globalErrorMsg.style.display = 'block';
@@ -149,7 +148,6 @@ function closeDynamicModal() {
     document.getElementById('dynamic_modal_container').style.display = 'none';
 }
 
-// Session ထဲမှ Errors များကို Input Field တစ်ခုချင်းစီအလိုက် ခွဲခြားထည့်သွင်းခြင်း
 window.addEventListener('DOMContentLoaded', () => {
     if (window.FORM_ERRORS && window.OLD_INPUT) {
         const errors = window.FORM_ERRORS || {};
@@ -166,13 +164,13 @@ window.addEventListener('DOMContentLoaded', () => {
                         label: 'Category Name', 
                         type: 'text', 
                         placeholder: 'Enter category name',
-                        error: errors.name || '' // Name field အတွက် Error
+                        error: errors.name || '' 
                     },
                     { 
                         name: 'image', 
                         label: 'Category Image', 
                         type: 'file',
-                        error: errors.image || '' // Image field အတွက် Error
+                        error: errors.image || '' 
                     }
                 ],
                 data: {
@@ -180,7 +178,7 @@ window.addEventListener('DOMContentLoaded', () => {
                     name: oldInput.name || '',
                     old_image: oldInput.old_image || ''
                 },
-                globalError: errors.db || '' // General Database error ရှိရင်ပြရန်
+                globalError: errors.db || ''
             });
         }
     }
