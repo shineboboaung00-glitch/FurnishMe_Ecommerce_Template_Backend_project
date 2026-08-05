@@ -148,38 +148,56 @@ function closeDynamicModal() {
     document.getElementById('dynamic_modal_container').style.display = 'none';
 }
 
-window.addEventListener('DOMContentLoaded', () => {
-    if (window.FORM_ERRORS && window.OLD_INPUT) {
-        const errors = window.FORM_ERRORS || {};
-        const oldInput = window.OLD_INPUT || {};
+document.addEventListener('DOMContentLoaded', () => {
+    const dynamicForm = document.getElementById('dynamic_form');
 
-        if (oldInput.module === 'categories') {
-            openDynamicModal({
-                module: 'categories',
-                action: oldInput.action_type || 'create',
-                title: oldInput.action_type === 'update' ? 'Edit Category' : 'Add New Category',
-                fields: [
-                    { 
-                        name: 'name', 
-                        label: 'Category Name', 
-                        type: 'text', 
-                        placeholder: 'Enter category name',
-                        error: errors.name || '' 
-                    },
-                    { 
-                        name: 'image', 
-                        label: 'Category Image', 
-                        type: 'file',
-                        error: errors.image || '' 
+    if (dynamicForm) {
+        dynamicForm.addEventListener('submit', function (e) {
+            e.preventDefault(); 
+
+            let formData = new FormData(this);
+            let globalErrorMsg = document.getElementById('modal_error_msg');
+
+            
+            if (globalErrorMsg) {
+                globalErrorMsg.style.display = 'none';
+                globalErrorMsg.innerText = '';
+            }
+            document.querySelectorAll('#modal_inputs_container small').forEach(el => el.remove());
+
+            
+            fetch(this.action, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === true) {
+                    
+                    window.location.reload();
+                } else {
+                    
+                    if (data.errors) {
+                        for (const [key, message] of Object.entries(data.errors)) {
+                            if (key === 'db') {
+                                if (globalErrorMsg) {
+                                    globalErrorMsg.innerText = message;
+                                    globalErrorMsg.style.display = 'block';
+                                }
+                            } else {
+                                let inputField = document.querySelector(`[name="${key}"]`);
+                                if (inputField) {
+                                    let errorSpan = document.createElement('small');
+                                    errorSpan.style.cssText = "color: #e74c3c; font-size: 1.2rem; display: block; margin-top: 0.3rem;";
+                                    errorSpan.innerText = message;
+                                    inputField.parentNode.appendChild(errorSpan);
+                                }
+                            }
+                        }
                     }
-                ],
-                data: {
-                    id: oldInput.item_id || '',
-                    name: oldInput.name || '',
-                    old_image: oldInput.old_image || ''
-                },
-                globalError: errors.db || ''
-            });
-        }
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
     }
 });

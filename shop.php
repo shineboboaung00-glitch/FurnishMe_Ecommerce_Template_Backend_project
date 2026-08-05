@@ -11,11 +11,6 @@ $db = $database->getConnection();
 
 $category_object = new Category($db);
 $categories = $category_object->read();
-
-$form_errors = $_SESSION['form_errors'] ?? null;
-$old_input = $_SESSION['old_input'] ?? null;
-
-unset($_SESSION['form_errors'], $_SESSION['old_input']);
 ?>
 
 <!DOCTYPE html>
@@ -28,11 +23,7 @@ unset($_SESSION['form_errors'], $_SESSION['old_input']);
     <title>Home</title>
 
     <?php include('components/css.php'); ?>
-
-    <script>
-        window.FORM_ERRORS = <?php echo json_encode($form_errors); ?>;
-        window.OLD_INPUT = <?php echo json_encode($old_input); ?>;
-    </script>
+    
 </head>
 
 <body>

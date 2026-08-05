@@ -1,10 +1,6 @@
 <?php
 session_start();
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 require_once __DIR__ . '/../components/connection.php';
 
 $database = new Database();
@@ -29,14 +25,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($action_type === 'create') {
             $data = $controller->create($_POST, $_FILES);
-
             if ($data['status'] === true) {
                 $_SESSION['flash_success'] = 'Created successfully';
-            } else {
-                $_SESSION['form_errors'] = $data['errors'];
-                $_SESSION['old_input'] = $_POST;
             }
-            header('Location: ' . $_SERVER['HTTP_REFERER']);
+            header('Content-Type: application/json');
+            echo json_encode($data);
             exit();
 
         } else if ($action_type === 'update') {
@@ -46,11 +39,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if ($data['status'] === true) {
                 $_SESSION['flash_success'] = 'Updated successfully';
-            } else {
-                $_SESSION['form_errors'] = $data['errors'];
-                $_SESSION['old_input'] = $_POST;
             }
-            header('Location: ' . $_SERVER['HTTP_REFERER']);
+            header('Content-Type: application/json');
+            echo json_encode($data);
             exit();
 
         } else if ($action_type === 'delete') {
@@ -59,13 +50,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if ($controller->delete()) {
                 $_SESSION['flash_success'] = 'Deleted successfully';
+                header('Content-Type: application/json');
+                echo json_encode(['status' => true]);
             } else {
-                $_SESSION['form_errors'] = ['db' => 'Delete failed'];
+                header('Content-Type: application/json');
+                echo json_encode(['status' => false, 'errors' => ['db' => 'Delete failed']]);
             }
-            header('Location: ' . $_SERVER['HTTP_REFERER']);
             exit();
         }
     }
-    header('Location: ' . $_SERVER['HTTP_REFERER']);
-    exit();
 }
