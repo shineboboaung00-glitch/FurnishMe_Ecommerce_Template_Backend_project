@@ -14,9 +14,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $class_name = null;
 
+    # Module Class Switch
     if ($module === 'categories') {
         require_once __DIR__ . '/../classes/category.php';
         $class_name = "Category";
+    }else if ($module === 'product') {
+        require_once __DIR__ . '/../classes/product.php';
+        $class_name = "Product";
     }
 
     if ($class_name && class_exists($class_name)) {
