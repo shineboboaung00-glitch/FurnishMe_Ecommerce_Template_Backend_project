@@ -69,17 +69,18 @@ function openDynamicModal(config) {
     let submitBtn = document.getElementById('modal_submit_btn');
     let globalErrorMsg = document.getElementById('modal_error_msg');
 
-    // General Error Reset
+    // Reset Errors
     if (globalErrorMsg) {
         globalErrorMsg.style.display = 'none';
         globalErrorMsg.innerText = '';
     }
 
-    moduleInput.value = config.module;
-    actionInput.value = config.action;
+    moduleInput.value = config.module || '';
+    actionInput.value = config.action || '';
     title.innerText = config.title || 'Form';
     inputsContainer.innerHTML = '';
 
+    // Old Image Hidden Input
     let oldImageInput = document.getElementById('modal_old_image');
     if (!oldImageInput) {
         oldImageInput = document.createElement('input');
@@ -91,7 +92,7 @@ function openDynamicModal(config) {
     oldImageInput.value = (config.data && config.data.old_image) ? config.data.old_image : '';
 
     if (config.action === 'delete') {
-        idInput.value = config.data.id;
+        idInput.value = config.data ? config.data.id : '';
         message.innerText = config.message || 'Are you sure you want to delete this item?';
         message.style.display = 'block';
         submitBtn.innerText = 'Yes, Delete';
@@ -102,10 +103,11 @@ function openDynamicModal(config) {
 
         if (config.fields && config.fields.length > 0) {
             config.fields.forEach(field => {
-                let value = (config.data && config.data[field.name] !== undefined) ? config.data[field.name] : '';
+                let value = (config.data && config.data[field.name] !== undefined) ? config.data[field.name] : (field.default || '');
                 let fieldError = field.error ? `<small style="color: #e74c3c; font-size: 1.2rem; display: block; margin-top: 0.3rem;">${field.error}</small>` : '';
                 let fieldHTML = '';
 
+                // 1. Textarea Input
                 if (field.type === 'textarea') {
                     fieldHTML = `
                     <div class="input-box">
@@ -113,8 +115,10 @@ function openDynamicModal(config) {
                         <textarea name="${field.name}" class="box" placeholder="${field.placeholder || ''}">${value}</textarea>
                         ${fieldError}
                     </div>`;
+
+                // 2. Select Dropdown Input
                 } else if (field.type === 'select') {
-                    let options = field.options.map(opt =>
+                    let options = (field.options || []).map(opt =>
                         `<option value="${opt.value}" ${value == opt.value ? 'selected' : ''}>${opt.label}</option>`
                     ).join('');
                     fieldHTML = `
@@ -123,14 +127,61 @@ function openDynamicModal(config) {
                         <select name="${field.name}" class="box">${options}</select>
                         ${fieldError}
                     </div>`;
-                } else {
+
+                // 3. Checkbox Input
+                } else if (field.type === 'checkbox') {
+                    let isChecked = value ? 'checked' : '';
+                    fieldHTML = `
+                    <div class="input-box" style="display: flex; align-items: center; gap: 10px;">
+                        <input type="checkbox" name="${field.name}" value="${field.value || '1'}" ${isChecked} id="field_${field.name}">
+                        <label for="field_${field.name}">${field.label}</label>
+                        ${fieldError}
+                    </div>`;
+
+                // 4. Radio Input Group
+                } else if (field.type === 'radio') {
+                    let radios = (field.options || []).map(opt =>
+                        `<label style="margin-right: 15px;">
+                            <input type="radio" name="${field.name}" value="${opt.value}" ${value == opt.value ? 'checked' : ''}> ${opt.label}
+                        </label>`
+                    ).join('');
                     fieldHTML = `
                     <div class="input-box">
                         <span>${field.label}</span>
-                        <input type="${field.type || 'text'}" name="${field.name}" value="${field.type !== 'file' ? value : ''}" class="box" placeholder="${field.placeholder || ''}">
+                        <div>${radios}</div>
+                        ${fieldError}
+                    </div>`;
+
+                // 5. File Input (with Preview feature)
+                } else if (field.type === 'file') {
+                    let preview = (config.data && config.data.old_image) 
+                        ? `<img src="${config.data.old_image}" style="width: 80px; height: 80px; object-fit: cover; margin-top: 5px; border-radius: 5px;" />` 
+                        : '';
+                    fieldHTML = `
+                    <div class="input-box">
+                        <span>${field.label}</span>
+                        <input type="file" name="${field.name}" class="box" accept="${field.accept || '*'}">
+                        ${preview}
+                        ${fieldError}
+                    </div>`;
+
+                // 6. Default Standard Inputs (text, number, date, time, password, email, color, range, hidden, etc.)
+                } else {
+                    fieldHTML = `
+                    <div class="input-box" ${field.type === 'hidden' ? 'style="display:none;"' : ''}>
+                        <span>${field.label || ''}</span>
+                        <input type="${field.type || 'text'}" 
+                            name="${field.name}" 
+                            value="${value}" 
+                            class="box" 
+                            placeholder="${field.placeholder || ''}" 
+                            ${field.min !== undefined ? `min="${field.min}"` : ''} 
+                            ${field.max !== undefined ? `max="${field.max}"` : ''} 
+                            ${field.step !== undefined ? `step="${field.step}"` : ''}>
                         ${fieldError}
                     </div>`;
                 }
+
                 inputsContainer.innerHTML += fieldHTML;
             });
         }

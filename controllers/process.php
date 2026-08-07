@@ -21,6 +21,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }else if ($module === 'product') {
         require_once __DIR__ . '/../classes/product.php';
         $class_name = "Product";
+    }else if ($module === 'service') {
+        require_once __DIR__ . '/../classes/service.php';
+        $class_name = "Service";
     }
 
     if ($class_name && class_exists($class_name)) {

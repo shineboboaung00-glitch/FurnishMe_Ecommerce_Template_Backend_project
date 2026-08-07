@@ -1,3 +1,21 @@
+<?php
+
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+require_once __DIR__ . '/components/connection.php';
+require_once __DIR__ . '/classes/category.php';
+
+$database = new Database();
+$db = $database->getConnection();
+
+$service_object = new Service($db);
+$categories = $service_object->read();
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -41,25 +59,36 @@
     <!-- blog section start -->
 
     <section class="blog">
-        <h1 class="title"> <span>our blogs</span> <a href="blog_create.php" class="btn add_new_service">Add New Blog</a> </h1>
+        <h1 class="title">
+            <span>our blogs</span>
+            <button onclick="openDynamicModal({
+                module: 'service',
+                action: 'create',
+                title: 'Add New Category',
+                fields: [
+                    { name: 'title', label: 'Service Title', type: 'text', placeholder: 'Enter Service Title' },
+                    { name: 'image', label: 'Service Image', type: 'file' }
+                ]
+            })" class="btn title-btn">Add new category</button>
+        </h1>
 
         <div class="box-container">
 
-        <div class="box">
-                    <div class="image">
-                        <img src="static/">
-                    </div>
-                    <div class="content">
-                        <h3></h3>
-                        <p></p>
-                        <a href="blog_update.php?i" class="btn">Update</a>
-                        <a href="blog_delete.php?i" class="btn">Delete</a>
-                        <div class="icons">
-                            <i class="fas fa-calendar"></i>
-                            <i class="fas fa-user"> by</i>
-                        </div>
+            <div class="box">
+                <div class="image">
+                    <img src="static/">
+                </div>
+                <div class="content">
+                    <h3></h3>
+                    <p></p>
+                    <a href="blog_update.php?i" class="btn">Update</a>
+                    <a href="blog_delete.php?i" class="btn">Delete</a>
+                    <div class="icons">
+                        <i class="fas fa-calendar"></i>
+                        <i class="fas fa-user"> by</i>
                     </div>
                 </div>
+            </div>
 
 
 

@@ -21,3 +21,5 @@ class database
         return $this->connection;
     }
 }
+
+?>
