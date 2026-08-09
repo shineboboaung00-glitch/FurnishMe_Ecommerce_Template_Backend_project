@@ -24,6 +24,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }else if ($module === 'service') {
         require_once __DIR__ . '/../classes/service.php';
         $class_name = "Service";
+    }else if ($module === "team") {
+        require_once __DIR__ . '/../classes/team.php';
+        $class_name = "Team";
+    }else if ($module === 'blog') {
+        require_once __DIR__ . '/../classes/blog.php';
+        $class_name = "Blog";
     }
 
     if ($class_name && class_exists($class_name)) {

@@ -6,13 +6,13 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 require_once __DIR__ . '/components/connection.php';
-require_once __DIR__ . '/classes/category.php';
+require_once __DIR__ . '/classes/blog.php';
 
 $database = new Database();
 $db = $database->getConnection();
 
-$service_object = new Service($db);
-$categories = $service_object->read();
+$blog_object = new Blog($db);
+$blog = $blog_object->read();
 
 ?>
 
@@ -62,33 +62,87 @@ $categories = $service_object->read();
         <h1 class="title">
             <span>our blogs</span>
             <button onclick="openDynamicModal({
-                module: 'service',
+                module: 'blog',
                 action: 'create',
-                title: 'Add New Category',
+                title: 'Add New Blog',
                 fields: [
-                    { name: 'title', label: 'Service Title', type: 'text', placeholder: 'Enter Service Title' },
-                    { name: 'image', label: 'Service Image', type: 'file' }
+                    { name: 'title', label: 'Blog Title', type: 'text', placeholder: 'Enter Blog Title' },
+                    { name: 'description', label: 'Description', type: 'textarea', placeholder: 'Enter Description' },
+                    { name: 'date', label: 'Date', type: 'date', placeholder: 'Enter Date' },
+                    { name: 'creator', label: 'Creator Name', type: 'text', placeholder: 'Enter Creator Name' },
+                    { name: 'image', label: 'Blog Image', type: 'file' }
                 ]
-            })" class="btn title-btn">Add new category</button>
+            })" class="btn title-btn">Add New Blog</button>
         </h1>
 
         <div class="box-container">
 
-            <div class="box">
-                <div class="image">
-                    <img src="static/">
-                </div>
-                <div class="content">
-                    <h3></h3>
-                    <p></p>
-                    <a href="blog_update.php?i" class="btn">Update</a>
-                    <a href="blog_delete.php?i" class="btn">Delete</a>
-                    <div class="icons">
-                        <i class="fas fa-calendar"></i>
-                        <i class="fas fa-user"> by</i>
+            <?php
+            if ($blog && $blog->rowCount() > 0):
+                while ($row = $blog->fetch(PDO::FETCH_ASSOC)):
+                    $blog_id = $row['id'];
+                    $blog_title = $row['title'] ?? '';
+                    $blog_description = $row['description'] ?? '';
+                    $blog_date = $row['date'] ?? '';
+                    $blog_creator = $row['creator'] ?? '';
+                    $raw_image = $row['image'] ?? '';
+                    $blog_image = $raw_image ? 'uploads/' . $raw_image : 'static/default.jpg';
+            ?>
+
+                    <div class="box">
+                        <div class="image">
+                            <img src="<?php echo htmlspecialchars($blog_image, ENT_QUOTES, 'UTF-8'); ?>" alt="<?php echo htmlspecialchars($blog_title, ENT_QUOTES, 'UTF-8'); ?>">
+                        </div>
+                        <div class="content">
+                            <h3><?php echo htmlspecialchars($blog_title, ENT_QUOTES, 'UTF-8'); ?></h3>
+                            <p><?php echo htmlspecialchars($blog_description, ENT_QUOTES, 'UTF-8'); ?></p>
+
+                            <!-- UPDATE BUTTON -->
+                            <button onclick='openDynamicModal({
+                        module: "blog",
+                        action: "update",
+                        title: "Edit blog",
+                        fields: [
+                            { name: "title", label: "Blog Title", type: "text" },
+                            { name: "description", label: "Description", type: "textarea" },
+                            { name: "date", label: "Date", type: "date"},
+                            { name: "creator", label: "Creator Name", type: "text"},
+                            { name: "image", label: "Team Mamber New Image (Optional)", type: "file" }
+                            
+                        ],
+                        data: <?php echo json_encode([
+                                    'id' => (string)$blog_id,
+                                    'title' => $blog_title,
+                                    'description' => $blog_description,
+                                    'date' => $blog_date,
+                                    'creator' => $blog_creator,
+                                    'old_image' => $raw_image
+                                ], JSON_HEX_QUOT | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS); ?>
+                    })' class="btn">Update</button>
+
+                            <!-- DELETE BUTTON -->
+                            <button onclick='openDynamicModal({
+                        module: "blog",
+                        action: "delete",
+                        title: "Delete Blog",
+                        message: <?php echo json_encode("Are you sure you want to delete " . $blog_title . "?"); ?>,
+                        data: { id: "<?php echo $blog_id; ?>" }
+                    })' class="btn">Delete</button>
+
+
+                            <div class="icons">
+                                <i class="fas fa-calendar"><?php echo htmlspecialchars($blog_date, ENT_QUOTES, 'UTF-8'); ?></i>
+                                <i class="fas fa-user">by <?php echo htmlspecialchars($blog_creator, ENT_QUOTES, 'UTF-8'); ?></i>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
+
+                <?php
+                endwhile;
+            else:
+                ?>
+                <p class="no_found_warnning">No blogs found!</p>
+            <?php endif; ?>
 
 
 
@@ -98,6 +152,8 @@ $categories = $service_object->read();
     <!-- blog section end -->
 
 
+    <!-- Dynamic Form Modal -->
+    <?php include('components/dynamic_form.php'); ?>
 
     <?php include('components/footer.php'); ?>
 

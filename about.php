@@ -59,8 +59,8 @@ $services = $service_object->read();
     <!-- services section start -->
     <section class="services">
 
-        <h1 class="title"> 
-            <span>our services</span> 
+        <h1 class="title">
+            <span>our services</span>
             <button onclick="openDynamicModal({
                 module: 'service',
                 action: 'create',
@@ -83,13 +83,13 @@ $services = $service_object->read();
                     $raw_image = $row['image'] ?? '';
                     $s_image = $raw_image ? 'uploads/' . $raw_image : 'static/default.jpg';
             ?>
-                <div class="box">
-                    <img src="<?php echo htmlspecialchars($s_image, ENT_QUOTES, 'UTF-8'); ?>" alt="<?php echo htmlspecialchars($s_title, ENT_QUOTES, 'UTF-8'); ?>">
-                    <h3><?php echo htmlspecialchars($s_title, ENT_QUOTES, 'UTF-8'); ?></h3>
-                    <p><?php echo htmlspecialchars($s_description, ENT_QUOTES, 'UTF-8'); ?></p>
+                    <div class="box">
+                        <img src="<?php echo htmlspecialchars($s_image, ENT_QUOTES, 'UTF-8'); ?>" alt="<?php echo htmlspecialchars($s_title, ENT_QUOTES, 'UTF-8'); ?>">
+                        <h3><?php echo htmlspecialchars($s_title, ENT_QUOTES, 'UTF-8'); ?></h3>
+                        <p><?php echo htmlspecialchars($s_description, ENT_QUOTES, 'UTF-8'); ?></p>
 
-                    <!-- UPDATE BUTTON -->
-                    <button onclick='openDynamicModal({
+                        <!-- UPDATE BUTTON -->
+                        <button onclick='openDynamicModal({
                         module: "service",
                         action: "update",
                         title: "Edit Service",
@@ -99,26 +99,26 @@ $services = $service_object->read();
                             { name: "image", label: "New Image (Optional)", type: "file" }
                         ],
                         data: <?php echo json_encode([
-                            'id' => (string)$s_id,
-                            'title' => $s_title,
-                            'description' => $s_description,
-                            'old_image' => $raw_image
-                        ], JSON_HEX_QUOT | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS); ?>
+                                    'id' => (string)$s_id,
+                                    'title' => $s_title,
+                                    'description' => $s_description,
+                                    'old_image' => $raw_image
+                                ], JSON_HEX_QUOT | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS); ?>
                     })' class="btn">Update</button>
 
-                    <!-- DELETE BUTTON -->
-                    <button onclick='openDynamicModal({
+                        <!-- DELETE BUTTON -->
+                        <button onclick='openDynamicModal({
                         module: "service",
                         action: "delete",
                         title: "Delete Service",
                         message: <?php echo json_encode("Are you sure you want to delete " . $s_title . "?"); ?>,
                         data: { id: "<?php echo $s_id; ?>" }
                     })' class="btn">Delete</button>
-                </div>
-            <?php 
+                    </div>
+                <?php
                 endwhile;
             else:
-            ?>
+                ?>
                 <p class="no_found_warnning">No services found!</p>
             <?php endif; ?>
         </div>
@@ -136,5 +136,3 @@ $services = $service_object->read();
 </body>
 
 </html>
-
-lorem*50
