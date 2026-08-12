@@ -1,24 +1,3 @@
-<?php
-require_once 'components/connection.php';
-
-if (isset($_POST['submit']) && !empty($_POST['email'])) {
-    
-    $database = new Database();
-    $db = $database->getConnection();
-
-    $email = htmlspecialchars(strip_tags($_POST['email']));
-
-    $query = "INSERT INTO newsletter (email) VALUES (:email)";
-    $stmt = $db->prepare($query);
-    $stmt->bindParam(':email', $email);
-
-    if ($stmt->execute()) {
-        header('Location: contact.php');
-        exit();
-    }
-}
-?>
-
 <!-- footer section start  -->
 <section class="footer">
     <div class="box-container">
@@ -54,9 +33,17 @@ if (isset($_POST['submit']) && !empty($_POST['email'])) {
         <div class="box">
             <h3>newsletter</h3>
             <p>subscribe for latest updates</p>
-            <form method="POST">
-                <input type="email" name="email" placeholder="enter your email" required>
-                <button type="submit" name="submit" class="btn">Send Message</button>
+
+            <form id="newsletter_form" class="ajax-form" data-success-msg="Subscribed successfully!">
+                <input type="hidden" name="module" value="newsletter">
+                <input type="hidden" name="action_type" value="create">
+
+                <input type="email" name="email" id="newsletter_email" placeholder="enter your email">
+
+                <span id="email-error" style="color: red; display: block; font-size: 14px; margin-top: 5px;"></span>
+
+                <button type="submit" class="btn">Send Message</button>
+
             </form>
         </div>
 

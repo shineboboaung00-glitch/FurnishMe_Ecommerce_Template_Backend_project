@@ -63,8 +63,7 @@ $products = $product_object->read();
             if ($categories && $categories->rowCount() > 0):
                 while ($row = $categories->fetch(PDO::FETCH_ASSOC)):
                     $id = $row['id'];
-                    $name = htmlspecialchars($row['name'], ENT_QUOTES, 'UTF-8');
-                    $js_safe_name = addslashes($name);
+                    $name = $row['name'] ?? '';
                     $image = $row['image'] ? 'uploads/' . $row['image'] : 'static/default.jpg';
             ?>
                     <div class="box">
@@ -83,7 +82,7 @@ $products = $product_object->read();
                             ],
                             data: { 
                                 id: '<?php echo $id; ?>', 
-                                name: '<?php echo $js_safe_name; ?>',
+                                name: '<?php echo $name; ?>',
                                 old_image: '<?php echo $row['image']; ?>' 
                             }
                         })" class="btn">Update</button>
@@ -92,7 +91,7 @@ $products = $product_object->read();
                             module: 'categories',
                             action: 'delete',
                             title: 'Delete Category',
-                            message: 'Are you sure you want to delete <?php echo $js_safe_name; ?>?',
+                            message: 'Are you sure you want to delete <?php echo $name; ?> ?',
                             data: { id: '<?php echo $id; ?>' }
                         })" class="btn">Delete</button>
                     </div>
@@ -131,10 +130,9 @@ $products = $product_object->read();
             if ($products && $products->rowCount() > 0):
                 while ($row = $products->fetch(PDO::FETCH_ASSOC)):
                     $p_id = $row['id'];
-                    $p_name = htmlspecialchars($row['name'], ENT_QUOTES, 'UTF-8');
-                    $js_p_name = addslashes($p_name);
-                    $p_price = $row['price'];
-                    $p_qty = $row['quantity'];
+                    $p_name = $row['name'] ?? '';
+                    $p_price = $row['price'] ?? '';
+                    $p_qty = $row['quantity'] ?? '';
                     $p_rating = floatval($row['rating'] ?? 0); 
                     $p_image = $row['image'] ? 'uploads/' . $row['image'] : 'static/default.jpg';
             ?>
@@ -153,7 +151,7 @@ $products = $product_object->read();
                         ],
                         data: { 
                             id: '<?php echo $p_id; ?>', 
-                            name: '<?php echo $js_p_name; ?>',
+                            name: '<?php echo $p_name; ?>',
                             price: '<?php echo $p_price; ?>',
                             quantity: '<?php echo $p_qty; ?>',
                             rating: '<?php echo $p_rating; ?>',
@@ -165,7 +163,7 @@ $products = $product_object->read();
                         module: 'product',
                         action: 'delete',
                         title: 'Delete Product',
-                        message: 'Are you sure you want to delete <?php echo $js_p_name; ?>?',
+                        message: 'Are you sure you want to delete <?php echo $p_name; ?>?',
                         data: { id: '<?php echo $p_id; ?>' }
                     })" class="btn">Delete</button>
                         </div>
@@ -199,6 +197,7 @@ $products = $product_object->read();
                                 <span>(<?php echo $p_rating; ?>)</span>
                             </div>
                             <!-- Dynamic Star Rating Display End -->
+                            
                         </div>
                     </div>
                 <?php

@@ -33,27 +33,23 @@
     <!-- contact section start -->
 
     <div class="contact">
-        <form id="contact_form" class="ajax-form" data-success-msg="Your message has been sent successfully!">
+        <form id="contact_form">
             <h3>get in touch</h3>
 
             <input type="hidden" name="module" value="contact">
             <input type="hidden" name="action_type" value="create">
 
             <span>your name</span>
-            <input type="text" name="name" class="box" placeholder="Enter your name">
-            <span class="error-msg" id="error-name" style="color: red; font-size: 14px; display: block;"></span>
+            <input type="text" class="box">
 
             <span>your number</span>
-            <input type="number" name="phone" class="box" placeholder="Enter your phone number">
-            <span class="error-msg" id="error-phone" style="color: red; font-size: 14px; display: block;"></span>
+            <input type="number" class="box">
 
             <span>your email</span>
-            <input type="email" name="email" class="box" placeholder="Enter your email">
-            <span class="error-msg" id="error-email" style="color: red; font-size: 14px; display: block;"></span>
+            <input type="email" class="box">
 
             <span>your message</span>
-            <textarea name="message" cols="30" rows="10" class="box" placeholder="Enter your message"></textarea>
-            <span class="error-msg" id="error-message" style="color: red; font-size: 14px; display: block;"></span>
+            <textarea cols="30" rows="10" class="box"></textarea>
 
             <button type="submit" class="btn">Send Message</button>
         </form>

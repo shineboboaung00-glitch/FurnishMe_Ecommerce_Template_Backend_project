@@ -252,3 +252,69 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+
+// ====================================================================================================
+
+// =============================================================================================
+// Global AJAX Form Handler
+// =============================================================================================
+
+document.querySelectorAll('.ajax-form').forEach(form => {
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const currentForm = this;
+        const submitBtn = currentForm.querySelector('button[type="submit"]');
+        const originalBtnText = submitBtn ? submitBtn.innerHTML : '';
+        const successMsg = currentForm.getAttribute('data-success-msg') || 'Action completed successfully!';
+
+        // 1. Clear previous errors
+        currentForm.querySelectorAll('.error-msg').forEach(el => el.innerText = '');
+
+        // 2. Disable Submit Button to prevent double submission
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = 'Sending...';
+        }
+
+        const formData = new FormData(currentForm);
+
+        fetch('controllers/process.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(async response => {
+            // Check HTTP status code
+            if (!response.ok) {
+                throw new Error(`Server Error (${response.status})`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.status === true) {
+                alert(successMsg);
+                currentForm.reset();
+            } else if (data.status === false && data.errors) {
+                // Show errors dynamically
+                for (const [key, message] of Object.entries(data.errors)) {
+                    let errorSpan = currentForm.querySelector(`#error-${key}`) || currentForm.querySelector(`[data-error="${key}"]`);
+                    if (errorSpan) {
+                        errorSpan.innerText = message;
+                    }
+                }
+            }
+        })
+        .catch(error => {
+            console.error('AJAX Form Error:', error);
+            alert('Something went wrong. Please try again later.');
+        })
+        .finally(() => {
+            // 3. Restore Submit Button state
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+            }
+        });
+    });
+});

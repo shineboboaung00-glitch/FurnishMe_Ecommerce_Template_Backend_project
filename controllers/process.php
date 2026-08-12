@@ -30,6 +30,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }else if ($module === 'blog') {
         require_once __DIR__ . '/../classes/blog.php';
         $class_name = "Blog";
+    }else if ($module === 'contact') {
+        require_once __DIR__ . '/../classes/contact.php';
+        $class_name = "Contact";
+    }else if ($module === 'newsletter') {
+        require_once __DIR__ . '/../classes/newsletter.php';
+        $class_name = "Newsletter";
     }
 
     if ($class_name && class_exists($class_name)) {
