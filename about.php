@@ -7,6 +7,8 @@ if (session_status() === PHP_SESSION_NONE) {
 require_once __DIR__ . '/components/connection.php';
 require_once __DIR__ . '/classes/service.php';
 
+$isAdmin = isset($_SESSION['user_id']) && isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin';
+
 $database = new Database();
 $db = $database->getConnection();
 
@@ -61,7 +63,8 @@ $services = $service_object->read();
 
         <h1 class="title">
             <span>our services</span>
-            <button onclick="openDynamicModal({
+            <?php if ($isAdmin): ?>
+                <button onclick="openDynamicModal({
                 module: 'service',
                 action: 'create',
                 title: 'Add New Service',
@@ -71,6 +74,7 @@ $services = $service_object->read();
                     { name: 'image', label: 'Service Image', type: 'file' }
                 ]
             })" class="btn title-btn">Add New Service</button>
+            <?php endif; ?>
         </h1>
 
         <div class="box-container">
@@ -89,7 +93,8 @@ $services = $service_object->read();
                         <p><?php echo htmlspecialchars($s_description, ENT_QUOTES, 'UTF-8'); ?></p>
 
                         <!-- UPDATE BUTTON -->
-                        <button onclick='openDynamicModal({
+                        <?php if ($isAdmin): ?>
+                            <button onclick='openDynamicModal({
                         module: "service",
                         action: "update",
                         title: "Edit Service",
@@ -105,15 +110,18 @@ $services = $service_object->read();
                                     'old_image' => $raw_image
                                 ], JSON_HEX_QUOT | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS); ?>
                     })' class="btn">Update</button>
+                        <?php endif; ?>
 
                         <!-- DELETE BUTTON -->
-                        <button onclick='openDynamicModal({
+                        <?php if ($isAdmin): ?>
+                            <button onclick='openDynamicModal({
                         module: "service",
                         action: "delete",
                         title: "Delete Service",
                         message: <?php echo json_encode("Are you sure you want to delete " . $s_title . "?"); ?>,
                         data: { id: "<?php echo $s_id; ?>" }
                     })' class="btn">Delete</button>
+                        <?php endif; ?>
                     </div>
                 <?php
                 endwhile;

@@ -7,6 +7,9 @@ if (session_status() === PHP_SESSION_NONE) {
 require_once __DIR__ . '/components/connection.php';
 require_once __DIR__ . '/classes/team.php';
 
+// 🟢 1. Admin Role ဟုတ်မဟုတ် စစ်ဆေးရန် Variables သတ်မှတ်ခြင်း
+$isAdmin = isset($_SESSION['user_id']) && isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin';
+
 $database = new Database();
 $db = $database->getConnection();
 
@@ -53,7 +56,9 @@ $teams = $team_object->read();
 
         <h1 class="title">
             <span>our team</span>
-            <button onclick="openDynamicModal({
+
+            <?php if ($isAdmin): ?>
+                <button onclick="openDynamicModal({
                 module: 'team',
                 action: 'create',
                 title: 'Add New Team Member',
@@ -63,6 +68,7 @@ $teams = $team_object->read();
                     { name: 'image', label: 'Team Mamber Image', type: 'file' }
                 ]
             })" class="btn title-btn">Add New Team Member</button>
+            <?php endif; ?>
         </h1>
 
         <div class="box-container">
@@ -80,7 +86,8 @@ $teams = $team_object->read();
 
                         <div class="icons">
                             <!-- UPDATE BUTTON -->
-                            <button onclick='openDynamicModal({
+                            <?php if ($isAdmin): ?>
+                                <button onclick='openDynamicModal({
                         module: "team",
                         action: "update",
                         title: "Edit Service",
@@ -96,15 +103,18 @@ $teams = $team_object->read();
                                     'old_image' => $t_image
                                 ], JSON_HEX_QUOT | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS); ?>
                     })' class="btn">Update</button>
+                            <?php endif; ?>
 
                             <!-- DELETE BUTTON -->
-                            <button onclick='openDynamicModal({
+                            <?php if ($isAdmin): ?>
+                                <button onclick='openDynamicModal({
                         module: "team",
                         action: "delete",
                         title: "Delete Team Mamber",
                         message: <?php echo json_encode("Are you sure you want to delete " . $team_mamber_name . "?"); ?>,
                         data: { id: "<?php echo $team_id; ?>" }
                     })' class="btn">Delete</button>
+                            <?php endif; ?>
 
                         </div>
                         <div class="image">

@@ -8,6 +8,8 @@ if (session_status() === PHP_SESSION_NONE) {
 require_once __DIR__ . '/components/connection.php';
 require_once __DIR__ . '/classes/blog.php';
 
+$isAdmin = isset($_SESSION['user_id']) && isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin';
+
 $database = new Database();
 $db = $database->getConnection();
 
@@ -61,7 +63,8 @@ $blog = $blog_object->read();
     <section class="blog">
         <h1 class="title">
             <span>our blogs</span>
-            <button onclick="openDynamicModal({
+            <?php if ($isAdmin): ?>
+                <button onclick="openDynamicModal({
                 module: 'blog',
                 action: 'create',
                 title: 'Add New Blog',
@@ -73,6 +76,7 @@ $blog = $blog_object->read();
                     { name: 'image', label: 'Blog Image', type: 'file' }
                 ]
             })" class="btn title-btn">Add New Blog</button>
+            <?php endif; ?>
         </h1>
 
         <div class="box-container">
@@ -98,7 +102,8 @@ $blog = $blog_object->read();
                             <p><?php echo htmlspecialchars($blog_description, ENT_QUOTES, 'UTF-8'); ?></p>
 
                             <!-- UPDATE BUTTON -->
-                            <button onclick='openDynamicModal({
+                            <?php if ($isAdmin): ?>
+                                <button onclick='openDynamicModal({
                         module: "blog",
                         action: "update",
                         title: "Edit blog",
@@ -119,15 +124,18 @@ $blog = $blog_object->read();
                                     'old_image' => $raw_image
                                 ], JSON_HEX_QUOT | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS); ?>
                     })' class="btn">Update</button>
+                            <?php endif; ?>
 
                             <!-- DELETE BUTTON -->
-                            <button onclick='openDynamicModal({
+                            <?php if ($isAdmin): ?>
+                                <button onclick='openDynamicModal({
                         module: "blog",
                         action: "delete",
                         title: "Delete Blog",
                         message: <?php echo json_encode("Are you sure you want to delete " . $blog_title . "?"); ?>,
                         data: { id: "<?php echo $blog_id; ?>" }
                     })' class="btn">Delete</button>
+                            <?php endif; ?>
 
 
                             <div class="icons">

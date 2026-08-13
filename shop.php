@@ -8,6 +8,9 @@ require_once __DIR__ . '/components/connection.php';
 require_once __DIR__ . '/classes/category.php';
 require_once __DIR__ . '/classes/product.php';
 
+// 🟢 1. Admin Role ဟုတ်မဟုတ် စစ်ဆေးရန် Variables သတ်မှတ်ခြင်း
+$isAdmin = isset($_SESSION['user_id']) && isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin';
+
 $database = new Database();
 $db = $database->getConnection();
 
@@ -47,15 +50,19 @@ $products = $product_object->read();
     <section class="category">
         <h1 class="title">
             <span>our categories</span>
-            <button onclick="openDynamicModal({
-                module: 'categories',
-                action: 'create',
-                title: 'Add New Category',
-                fields: [
-                    { name: 'name', label: 'Category Name', type: 'text', placeholder: 'Enter category name' },
-                    { name: 'image', label: 'Category Image', type: 'file' }
-                ]
-            })" class="btn title-btn">Add new category</button>
+            
+            <!-- 🛑 2. Admin ဖြစ်မှသာ "Add New Category" Button ပြမည် -->
+            <?php if ($isAdmin): ?>
+                <button onclick="openDynamicModal({
+                    module: 'categories',
+                    action: 'create',
+                    title: 'Add New Category',
+                    fields: [
+                        { name: 'name', label: 'Category Name', type: 'text', placeholder: 'Enter category name' },
+                        { name: 'image', label: 'Category Image', type: 'file' }
+                    ]
+                })" class="btn title-btn">Add new category</button>
+            <?php endif; ?>
         </h1>
 
         <div class="box-container">
@@ -72,28 +79,31 @@ $products = $product_object->read();
                             <h3><?php echo $name; ?></h3>
                         </a>
 
-                        <button onclick="openDynamicModal({
-                            module: 'categories',
-                            action: 'update',
-                            title: 'Edit Category',
-                            fields: [
-                                { name: 'name', label: 'Category Name', type: 'text' },
-                                { name: 'image', label: 'New Image (Optional)', type: 'file' }
-                            ],
-                            data: { 
-                                id: '<?php echo $id; ?>', 
-                                name: '<?php echo $name; ?>',
-                                old_image: '<?php echo $row['image']; ?>' 
-                            }
-                        })" class="btn">Update</button>
+                        <!-- 🛑 3. Admin ဖြစ်မှသာ Category "Update" & "Delete" Button ပြမည် -->
+                        <?php if ($isAdmin): ?>
+                            <button onclick="openDynamicModal({
+                                module: 'categories',
+                                action: 'update',
+                                title: 'Edit Category',
+                                fields: [
+                                    { name: 'name', label: 'Category Name', type: 'text' },
+                                    { name: 'image', label: 'New Image (Optional)', type: 'file' }
+                                ],
+                                data: { 
+                                    id: '<?php echo $id; ?>', 
+                                    name: '<?php echo $name; ?>',
+                                    old_image: '<?php echo $row['image']; ?>' 
+                                }
+                            })" class="btn">Update</button>
 
-                        <button onclick="openDynamicModal({
-                            module: 'categories',
-                            action: 'delete',
-                            title: 'Delete Category',
-                            message: 'Are you sure you want to delete <?php echo $name; ?> ?',
-                            data: { id: '<?php echo $id; ?>' }
-                        })" class="btn">Delete</button>
+                            <button onclick="openDynamicModal({
+                                module: 'categories',
+                                action: 'delete',
+                                title: 'Delete Category',
+                                message: 'Are you sure you want to delete <?php echo $name; ?> ?',
+                                data: { id: '<?php echo $id; ?>' }
+                            })" class="btn">Delete</button>
+                        <?php endif; ?>
                     </div>
                 <?php
                 endwhile;
@@ -104,25 +114,29 @@ $products = $product_object->read();
         </div>
     </section>
 
-    <!-- Dynamic Form Modal -->
-    <?php include('components/dynamic_form.php'); ?>
+    <!-- Dynamic Form Modal ( Admin ဖြစ်မှသာ Include လုပ်ပါမည် ) -->
+    <?php if ($isAdmin) include('components/dynamic_form.php'); ?>
 
     <!-- products section start -->
     <section class="products">
         <h1 class="title">
             <span>our products</span>
-            <button onclick="openDynamicModal({
-            module: 'product',
-            action: 'create',
-            title: 'Add New Product',
-            fields: [
-                { name: 'name', label: 'Product Name', type: 'text', placeholder: 'Enter product name' },
-                { name: 'price', label: 'Price', type: 'number', placeholder: 'Enter price' },
-                { name: 'quantity', label: 'Quantity', type: 'number', placeholder: 'Enter quantity' },
-                { name: 'rating', label: 'Rating (1 to 5)', type: 'number', placeholder: 'e.g. 5' },
-                { name: 'image', label: 'Product Image', type: 'file' }
-            ]
-        })" class="btn title-btn">Add new product</button>
+            
+            <!-- 🛑 4. Admin ဖြစ်မှသာ "Add New Product" Button ပြမည် -->
+            <?php if ($isAdmin): ?>
+                <button onclick="openDynamicModal({
+                    module: 'product',
+                    action: 'create',
+                    title: 'Add New Product',
+                    fields: [
+                        { name: 'name', label: 'Product Name', type: 'text', placeholder: 'Enter product name' },
+                        { name: 'price', label: 'Price', type: 'number', placeholder: 'Enter price' },
+                        { name: 'quantity', label: 'Quantity', type: 'number', placeholder: 'Enter quantity' },
+                        { name: 'rating', label: 'Rating (1 to 5)', type: 'number', placeholder: 'e.g. 5' },
+                        { name: 'image', label: 'Product Image', type: 'file' }
+                    ]
+                })" class="btn title-btn">Add new product</button>
+            <?php endif; ?>
         </h1>
 
         <div class="box-container">
@@ -138,34 +152,38 @@ $products = $product_object->read();
             ?>
                     <div class="box">
                         <div class="icons">
-                            <button onclick="openDynamicModal({
-                        module: 'product',
-                        action: 'update',
-                        title: 'Edit Product',
-                        fields: [
-                            { name: 'name', label: 'Product Name', type: 'text' },
-                            { name: 'price', label: 'Price', type: 'number' },
-                            { name: 'quantity', label: 'Quantity', type: 'number' },
-                            { name: 'rating', label: 'Rating (1 to 5)', type: 'number' },
-                            { name: 'image', label: 'New Image (Optional)', type: 'file' }
-                        ],
-                        data: { 
-                            id: '<?php echo $p_id; ?>', 
-                            name: '<?php echo $p_name; ?>',
-                            price: '<?php echo $p_price; ?>',
-                            quantity: '<?php echo $p_qty; ?>',
-                            rating: '<?php echo $p_rating; ?>',
-                            old_image: '<?php echo $row['image']; ?>' 
-                        }
-                    })" class="btn">Update</button>
+                            
+                            <!-- 🛑 5. Admin ဖြစ်မှသာ Product "Update" & "Delete" Button ပြမည် -->
+                            <?php if ($isAdmin): ?>
+                                <button onclick="openDynamicModal({
+                                    module: 'product',
+                                    action: 'update',
+                                    title: 'Edit Product',
+                                    fields: [
+                                        { name: 'name', label: 'Product Name', type: 'text' },
+                                        { name: 'price', label: 'Price', type: 'number' },
+                                        { name: 'quantity', label: 'Quantity', type: 'number' },
+                                        { name: 'rating', label: 'Rating (1 to 5)', type: 'number' },
+                                        { name: 'image', label: 'New Image (Optional)', type: 'file' }
+                                    ],
+                                    data: { 
+                                        id: '<?php echo $p_id; ?>', 
+                                        name: '<?php echo $p_name; ?>',
+                                        price: '<?php echo $p_price; ?>',
+                                        quantity: '<?php echo $p_qty; ?>',
+                                        rating: '<?php echo $p_rating; ?>',
+                                        old_image: '<?php echo $row['image']; ?>' 
+                                    }
+                                })" class="btn">Update</button>
 
-                            <button onclick="openDynamicModal({
-                        module: 'product',
-                        action: 'delete',
-                        title: 'Delete Product',
-                        message: 'Are you sure you want to delete <?php echo $p_name; ?>?',
-                        data: { id: '<?php echo $p_id; ?>' }
-                    })" class="btn">Delete</button>
+                                <button onclick="openDynamicModal({
+                                    module: 'product',
+                                    action: 'delete',
+                                    title: 'Delete Product',
+                                    message: 'Are you sure you want to delete <?php echo $p_name; ?>?',
+                                    data: { id: '<?php echo $p_id; ?>' }
+                                })" class="btn">Delete</button>
+                            <?php endif; ?>
                         </div>
 
                         <div class="image">
@@ -213,7 +231,6 @@ $products = $product_object->read();
     <?php include('components/footer.php'); ?>
     <?php include('components/js.php'); ?>
 
-    <script src="js/script.js"></script>
 
 </body>
 

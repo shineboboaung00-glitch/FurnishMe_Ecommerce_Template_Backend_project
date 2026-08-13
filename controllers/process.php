@@ -3,6 +3,8 @@ session_start();
 
 require_once __DIR__ . '/../components/connection.php';
 
+require_once __DIR__ . '/../middleware/auth.php'; // 🟢 1. Middleware ကို ခေါ်ယူခြင်း
+
 $database = new Database();
 $db = $database->getConnection();
 
@@ -12,28 +14,78 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $item_id = $_POST['item_id'] ?? null;
     $old_image = $_POST['old_image'] ?? '';
 
+    // =========================================================================
+    // 🟢 2. LOGIN ACTION (Admin/User Login ဝင်ခြင်း)
+    // =========================================================================
+    if ($action_type === 'login' || $module === 'auth') {
+        header('Content-Type: application/json');
+        
+        $email = trim($_POST['email'] ?? '');
+        $password = trim($_POST['password'] ?? '');
+
+        if (empty($email) || empty($password)) {
+            echo json_encode(['status' => false, 'errors' => ['email' => 'Email သို့မဟုတ် Password ဖြည့်ပါ။']]);
+            exit();
+        }
+
+        // Database တွင် User စစ်ဆေးခြင်း
+        $stmt = $db->prepare("SELECT * FROM users WHERE email = ?");
+        $stmt->execute([$email]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($user && password_verify($password, $user['password'])) {
+            session_regenerate_id(true); // Security အတွက် Session ID အသစ်ပြောင်းခြင်း
+
+            // Session ထဲသို့ User Data သိမ်းဆည်းခြင်း
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['user_name'] = $user['name'];
+            $_SESSION['user_role'] = $user['role']; // 'admin' သို့မဟုတ် 'user'
+
+            // Admin ဖြစ်ပါက Admin Dashboard သို့၊ Normal User ဖြစ်ပါက Home သို့ လမ်းကြောင်းညွှန်မည်
+            $redirect_url = ($user['role'] === 'admin') ? 'admin/dashboard.php' : 'index.php';
+
+            echo json_encode([
+                'status' => true,
+                'redirect' => $redirect_url,
+                'message' => 'Login successful!'
+            ]);
+        } else {
+            echo json_encode([
+                'status' => false, 
+                'errors' => ['email' => 'Email သို့မဟုတ် Password မှားယွင်းနေပါသည်။']
+            ]);
+        }
+        exit();
+    }
+
+    // =========================================================================
+    // 🔴 3. ADMIN AUTH CHECK (CRUD Operations များအတွက် Admin ဟုတ်မဟုတ် စစ်ဆေးခြင်း)
+    // =========================================================================
+    // Login မဟုတ်သော မည်သည့် Create, Update, Delete Action မဆို Admin ဖြစ်မှသာ လုပ်ဆောင်ခွင့်ပြုမည်
+    checkAdmin();
+
     $class_name = null;
 
     # Module Class Switch
     if ($module === 'categories') {
         require_once __DIR__ . '/../classes/category.php';
         $class_name = "Category";
-    }else if ($module === 'product') {
+    } else if ($module === 'product') {
         require_once __DIR__ . '/../classes/product.php';
         $class_name = "Product";
-    }else if ($module === 'service') {
+    } else if ($module === 'service') {
         require_once __DIR__ . '/../classes/service.php';
         $class_name = "Service";
-    }else if ($module === "team") {
+    } else if ($module === "team") {
         require_once __DIR__ . '/../classes/team.php';
         $class_name = "Team";
-    }else if ($module === 'blog') {
+    } else if ($module === 'blog') {
         require_once __DIR__ . '/../classes/blog.php';
         $class_name = "Blog";
-    }else if ($module === 'contact') {
+    } else if ($module === 'contact') {
         require_once __DIR__ . '/../classes/contact.php';
         $class_name = "Contact";
-    }else if ($module === 'newsletter') {
+    } else if ($module === 'newsletter') {
         require_once __DIR__ . '/../classes/newsletter.php';
         $class_name = "Newsletter";
     }
