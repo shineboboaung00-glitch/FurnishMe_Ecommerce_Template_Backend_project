@@ -34,16 +34,16 @@
             <h3>newsletter</h3>
             <p>subscribe for latest updates</p>
 
-            <form id="newsletter_form" class="ajax-form" data-success-msg="Subscribed successfully!">
+            
+            <form id="newsletter_form" class="ajax-form" data-success-msg="Subscribed successfully!" novalidate>
                 <input type="hidden" name="module" value="newsletter">
                 <input type="hidden" name="action_type" value="create">
 
                 <input type="email" name="email" id="newsletter_email" placeholder="enter your email">
 
-                <span id="email-error" style="color: red; display: block; font-size: 14px; margin-top: 5px;"></span>
+                <span id="error-email" class="errors_message"></span>
 
                 <button type="submit" class="btn">Send Message</button>
-
             </form>
         </div>
 

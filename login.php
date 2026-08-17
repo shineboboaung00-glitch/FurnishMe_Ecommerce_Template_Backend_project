@@ -3,7 +3,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// 🟢 Already Logged In ဖြစ်နေရင် Dashboard/Home သို့ တိုက်ရိုက်ပို့ပေးရန်
+// Already Logged In 
 if (isset($_SESSION['user_id'])) {
     if (($_SESSION['user_role'] ?? '') === 'admin') {
         header('Location: admin/dashboard.php');
@@ -23,24 +23,25 @@ if (isset($_POST['login'])) {
     $password = trim($_POST['password'] ?? '');
 
     if (!empty($username_or_email) && !empty($password)) {
-        // Database Connection (PDO) ယူခြင်း
+
+        // Database Connection
+
         $database = new Database();
         $db = $database->getConnection();
 
-        // 🟢 PDO Prepared Statement ဖြင့် SQL Injection ကာကွယ်ခြင်း[cite: 9]
+        // PDO Prepared Statement SQL Injection
         $stmt = $db->prepare("SELECT * FROM users WHERE username = ? OR email = ? LIMIT 1");
         $stmt->execute([$username_or_email, $username_or_email]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($user && password_verify($password, $user['password'])) {
-            // 🔒 Session Hijacking ကာကွယ်ရန် Session ID ပြောင်းခြင်း[cite: 9]
+
             session_regenerate_id(true);
 
-            // 🟢 Session Data များ သိမ်းဆည်းခြင်း[cite: 9]
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['username'] = $user['username'];
             $_SESSION['email'] = $user['email'];
-            $_SESSION['user_role'] = $user['role'] ?? 'user'; // 'admin' သို့မဟုတ် 'user'[cite: 9]
+            $_SESSION['user_role'] = $user['role'] ?? 'user';
 
             // Remember Me Cookie
             if (isset($_POST['remember'])) {
@@ -51,7 +52,6 @@ if (isset($_POST['login'])) {
                 }
             }
 
-            // 🟢 Role ပေါ်မူတည်၍ လမ်းကြောင်းညွှန်ခြင်း[cite: 9]
             if ($_SESSION['user_role'] === 'admin') {
                 header('Location: admin/dashboard.php');
             } else {
@@ -69,6 +69,7 @@ if (isset($_POST['login'])) {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -76,6 +77,7 @@ if (isset($_POST['login'])) {
     <title>Login</title>
     <?php include('components/css.php'); ?>
 </head>
+
 <body>
 
     <?php include('components/header.php'); ?>
@@ -93,12 +95,12 @@ if (isset($_POST['login'])) {
 
             <input type="text" placeholder="Enter your username or email" name="username_or_email" class="box" value="<?php echo htmlspecialchars($saved_username_or_email); ?>" required>
             <input type="password" placeholder="Enter your password" name="password" class="box" required>
-            
+
             <div class="remember">
                 <input type="checkbox" name="remember" id="remember-me" <?php echo !empty($saved_username_or_email) ? 'checked' : ''; ?>>
                 <label for="remember-me">Remember me</label>
             </div>
-            
+
             <input type="submit" value="Login Now" name="login" class="btn">
             <p>Forgot password? <a href="#">Click here</a></p>
             <p>Don't have an account? <a href="register.php">Create now</a></p>
@@ -109,4 +111,5 @@ if (isset($_POST['login'])) {
     <?php include('components/js.php'); ?>
 
 </body>
+
 </html>

@@ -5,7 +5,7 @@ class database
     private $server_name = "localhost";
     private $user_name = "root";
     private $password = ""; 
-    private $database = "final_db";
+    private $database = "ecommerce_db";
     private $connection;
 
     public function getConnection()

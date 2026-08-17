@@ -1,9 +1,13 @@
 <?php
 error_reporting(1);
-session_start(); // Start session to check if user is logged in
+session_start();
 ?>
 
 <!-- header section starts  -->
+
+<!-- FontAwesome CDN -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
 
 <header class="header">
     <a href="index.php" class="logo"> <i class="ri-menu-line"></i> FurnishMe </a>
@@ -12,6 +16,12 @@ session_start(); // Start session to check if user is logged in
         <input type="search" placeholder="search here..." id="search-box">
         <label for="search-box" class="ri-search-line"></label>
     </form>
+
+    <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
+        <a href="admin/dashboard.php" class="btn-admin-dashboard">
+            <i class="ri-user-settings-line"></i> Dashboard
+        </a>
+    <?php endif; ?>
 
     <div class="icons">
         <div id="search-btn" class="ri-search-line"></div>
@@ -25,6 +35,7 @@ session_start(); // Start session to check if user is logged in
 
         <div id="menu-btn" class="ri-menu-line"></div>
     </div>
+
 </header>
 
 <!-- header section ends  -->

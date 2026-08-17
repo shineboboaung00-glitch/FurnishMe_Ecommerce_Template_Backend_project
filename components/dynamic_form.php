@@ -9,7 +9,7 @@
         <h3 id="modal_title">Form Title</h3>
         
         
-        <p id="modal_error_msg" style="color: #e74c3c; font-size: 1.3rem; display: none; margin-bottom: 1rem;"></p>
+        <p id="modal_error_msg" class="errors_message"></p>
         
         <p id="modal_message" style="display: none;"></p>
 

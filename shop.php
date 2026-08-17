@@ -8,7 +8,7 @@ require_once __DIR__ . '/components/connection.php';
 require_once __DIR__ . '/classes/category.php';
 require_once __DIR__ . '/classes/product.php';
 
-// 🟢 1. Admin Role ဟုတ်မဟုတ် စစ်ဆေးရန် Variables သတ်မှတ်ခြင်း
+// Admin Auth Check
 $isAdmin = isset($_SESSION['user_id']) && isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin';
 
 $database = new Database();
@@ -29,9 +29,11 @@ $products = $product_object->read();
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
+    <title>Shop Page</title>
 
     <?php include('components/css.php'); ?>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 </head>
 
@@ -50,8 +52,7 @@ $products = $product_object->read();
     <section class="category">
         <h1 class="title">
             <span>our categories</span>
-            
-            <!-- 🛑 2. Admin ဖြစ်မှသာ "Add New Category" Button ပြမည် -->
+
             <?php if ($isAdmin): ?>
                 <button onclick="openDynamicModal({
                     module: 'categories',
@@ -71,38 +72,53 @@ $products = $product_object->read();
                 while ($row = $categories->fetch(PDO::FETCH_ASSOC)):
                     $id = $row['id'];
                     $name = $row['name'] ?? '';
-                    $image = $row['image'] ? 'uploads/' . $row['image'] : 'static/default.jpg';
+                    $raw_c_image = $row['image'] ?? '';
+
+                    if (!empty($raw_c_image)) {
+                        $c_image = (strpos($raw_c_image, 'uploads/') === 0 || strpos($raw_c_image, 'http') === 0)
+                            ? $raw_c_image
+                            : 'uploads/' . $raw_c_image;
+                    } else {
+                        $c_image = 'static/default.jpg';
+                    }
+
+                    // Update & Delete Params Safe Encoding
+                    $cat_update_config = json_encode([
+                        'module' => 'categories',
+                        'action' => 'update',
+                        'title'  => 'Edit Category',
+                        'fields' => [
+                            ['name' => 'name', 'label' => 'Category Name', 'type' => 'text'],
+                            ['name' => 'image', 'label' => 'New Image (Optional)', 'type' => 'file']
+                        ],
+                        'data'   => [
+                            'id' => (string)$id,
+                            'name' => $name,
+                            'old_image' => $raw_c_image
+                        ]
+                    ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+
+                    $cat_delete_config = json_encode([
+                        'module'  => 'categories',
+                        'action'  => 'delete',
+                        'title'   => 'Delete Category',
+                        'message' => 'Are you sure you want to delete ' . $name . '?',
+                        'data'    => ['id' => (string)$id]
+                    ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
             ?>
                     <div class="box">
                         <a href="#">
-                            <img src="<?php echo $image; ?>" alt="<?php echo $name; ?>">
-                            <h3><?php echo $name; ?></h3>
+                            <img src="<?php echo htmlspecialchars($c_image, ENT_QUOTES, 'UTF-8'); ?>" alt="<?php echo htmlspecialchars($name, ENT_QUOTES, 'UTF-8'); ?>">
+                            <h3><?php echo htmlspecialchars($name, ENT_QUOTES, 'UTF-8'); ?></h3>
                         </a>
 
-                        <!-- 🛑 3. Admin ဖြစ်မှသာ Category "Update" & "Delete" Button ပြမည် -->
                         <?php if ($isAdmin): ?>
-                            <button onclick="openDynamicModal({
-                                module: 'categories',
-                                action: 'update',
-                                title: 'Edit Category',
-                                fields: [
-                                    { name: 'name', label: 'Category Name', type: 'text' },
-                                    { name: 'image', label: 'New Image (Optional)', type: 'file' }
-                                ],
-                                data: { 
-                                    id: '<?php echo $id; ?>', 
-                                    name: '<?php echo $name; ?>',
-                                    old_image: '<?php echo $row['image']; ?>' 
-                                }
-                            })" class="btn">Update</button>
 
-                            <button onclick="openDynamicModal({
-                                module: 'categories',
-                                action: 'delete',
-                                title: 'Delete Category',
-                                message: 'Are you sure you want to delete <?php echo $name; ?> ?',
-                                data: { id: '<?php echo $id; ?>' }
-                            })" class="btn">Delete</button>
+                            <button onclick='openDynamicModal(<?php echo htmlspecialchars($cat_update_config, ENT_QUOTES, "UTF-8"); ?>)' class="btn">Update</button>
+
+                            <button onclick='openDynamicModal(<?php echo htmlspecialchars($cat_delete_config, ENT_QUOTES, "UTF-8"); ?>)' class="btn">Delete</button>
+
+
                         <?php endif; ?>
                     </div>
                 <?php
@@ -114,15 +130,11 @@ $products = $product_object->read();
         </div>
     </section>
 
-    <!-- Dynamic Form Modal ( Admin ဖြစ်မှသာ Include လုပ်ပါမည် ) -->
-    <?php if ($isAdmin) include('components/dynamic_form.php'); ?>
-
     <!-- products section start -->
     <section class="products">
         <h1 class="title">
             <span>our products</span>
-            
-            <!-- 🛑 4. Admin ဖြစ်မှသာ "Add New Product" Button ပြမည် -->
+
             <?php if ($isAdmin): ?>
                 <button onclick="openDynamicModal({
                     module: 'product',
@@ -147,75 +159,87 @@ $products = $product_object->read();
                     $p_name = $row['name'] ?? '';
                     $p_price = $row['price'] ?? '';
                     $p_qty = $row['quantity'] ?? '';
-                    $p_rating = floatval($row['rating'] ?? 0); 
-                    $p_image = $row['image'] ? 'uploads/' . $row['image'] : 'static/default.jpg';
+                    $p_rating = floatval($row['rating'] ?? 0);
+                    $raw_p_image = $row['image'] ?? '';
+
+                    if (!empty($raw_p_image)) {
+                        $p_image = (strpos($raw_p_image, 'uploads/') === 0 || strpos($raw_p_image, 'http') === 0)
+                            ? $raw_p_image
+                            : 'uploads/' . $raw_p_image;
+                    } else {
+                        $p_image = 'static/default.jpg';
+                    }
+
+                    // Product Update & Delete Params Safe Encoding
+                    $prod_update_config = json_encode([
+                        'module' => 'product',
+                        'action' => 'update',
+                        'title'  => 'Edit Product',
+                        'fields' => [
+                            ['name' => 'name', 'label' => 'Product Name', 'type' => 'text'],
+                            ['name' => 'price', 'label' => 'Price', 'type' => 'number'],
+                            ['name' => 'quantity', 'label' => 'Quantity', 'type' => 'number'],
+                            ['name' => 'rating', 'label' => 'Rating (1 to 5)', 'type' => 'number'],
+                            ['name' => 'image', 'label' => 'New Image (Optional)', 'type' => 'file']
+                        ],
+                        'data'   => [
+                            'id' => (string)$p_id,
+                            'name' => $p_name,
+                            'price' => (string)$p_price,
+                            'quantity' => (string)$p_qty,
+                            'rating' => (string)$p_rating,
+                            'old_image' => $raw_p_image
+                        ]
+                    ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+
+                    $prod_delete_config = json_encode([
+                        'module'  => 'product',
+                        'action'  => 'delete',
+                        'title'   => 'Delete Product',
+                        'message' => 'Are you sure you want to delete ' . $p_name . '?',
+                        'data'    => ['id' => (string)$p_id]
+                    ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
             ?>
                     <div class="box">
-                        <div class="icons">
-                            
-                            <!-- 🛑 5. Admin ဖြစ်မှသာ Product "Update" & "Delete" Button ပြမည် -->
-                            <?php if ($isAdmin): ?>
-                                <button onclick="openDynamicModal({
-                                    module: 'product',
-                                    action: 'update',
-                                    title: 'Edit Product',
-                                    fields: [
-                                        { name: 'name', label: 'Product Name', type: 'text' },
-                                        { name: 'price', label: 'Price', type: 'number' },
-                                        { name: 'quantity', label: 'Quantity', type: 'number' },
-                                        { name: 'rating', label: 'Rating (1 to 5)', type: 'number' },
-                                        { name: 'image', label: 'New Image (Optional)', type: 'file' }
-                                    ],
-                                    data: { 
-                                        id: '<?php echo $p_id; ?>', 
-                                        name: '<?php echo $p_name; ?>',
-                                        price: '<?php echo $p_price; ?>',
-                                        quantity: '<?php echo $p_qty; ?>',
-                                        rating: '<?php echo $p_rating; ?>',
-                                        old_image: '<?php echo $row['image']; ?>' 
-                                    }
-                                })" class="btn">Update</button>
+                        <?php if ($isAdmin): ?>
+                            <div class="icons">
 
-                                <button onclick="openDynamicModal({
-                                    module: 'product',
-                                    action: 'delete',
-                                    title: 'Delete Product',
-                                    message: 'Are you sure you want to delete <?php echo $p_name; ?>?',
-                                    data: { id: '<?php echo $p_id; ?>' }
-                                })" class="btn">Delete</button>
-                            <?php endif; ?>
-                        </div>
+
+
+                                <button onclick='openDynamicModal(<?php echo htmlspecialchars($prod_update_config, ENT_QUOTES, "UTF-8"); ?>)' class="btn">Update</button>
+
+                                <button onclick='openDynamicModal(<?php echo htmlspecialchars($prod_delete_config, ENT_QUOTES, "UTF-8"); ?>)' class="btn">Delete</button>
+
+                            </div>
+                        <?php endif; ?>
 
                         <div class="image">
-                            <img src="<?php echo $p_image; ?>" alt="<?php echo $p_name; ?>">
+                            <img src="<?php echo htmlspecialchars($p_image, ENT_QUOTES, 'UTF-8'); ?>" alt="<?php echo htmlspecialchars($p_name, ENT_QUOTES, 'UTF-8'); ?>">
                         </div>
 
                         <div class="content">
-                            <div class="price">$<?php echo $p_price; ?></div>
-                            <h3><?php echo $p_name; ?></h3>
+                            <div class="price">$<?php echo htmlspecialchars($p_price, ENT_QUOTES, 'UTF-8'); ?></div>
+                            <h3><?php echo htmlspecialchars($p_name, ENT_QUOTES, 'UTF-8'); ?></h3>
 
-                            
                             <div class="quantity" style="font-size: 1.4rem; color: #666; margin: 0.5rem 0;">
-                                Stock: <span><?php echo $p_qty; ?></span> items
+                                Stock: <span><?php echo htmlspecialchars($p_qty, ENT_QUOTES, 'UTF-8'); ?></span> items
                             </div>
 
-                            <!-- Dynamic Star Rating Display Start -->
                             <div class="stars">
                                 <?php
                                 for ($i = 1; $i <= 5; $i++) {
                                     if ($i <= $p_rating) {
-                                        echo '<i class="fas fa-star"></i>'; // Full Star
+                                        echo '<i class="fas fa-star"></i>';
                                     } elseif ($i - 0.5 <= $p_rating) {
-                                        echo '<i class="fas fa-star-half-alt"></i>'; // Half Star
+                                        echo '<i class="fas fa-star-half-alt"></i>';
                                     } else {
-                                        echo '<i class="far fa-star"></i>'; // Empty Star
+                                        echo '<i class="far fa-star"></i>';
                                     }
                                 }
                                 ?>
                                 <span>(<?php echo $p_rating; ?>)</span>
                             </div>
-                            <!-- Dynamic Star Rating Display End -->
-                            
+
                         </div>
                     </div>
                 <?php
@@ -226,11 +250,13 @@ $products = $product_object->read();
             <?php endif; ?>
         </div>
     </section>
-    <!-- products section end -->
+
+    <!-- Dynamic Form Modal -->
+    <?php if ($isAdmin) include('components/dynamic_form.php'); ?>
 
     <?php include('components/footer.php'); ?>
-    <?php include('components/js.php'); ?>
 
+    <?php include('components/js.php'); ?>
 
 </body>
 

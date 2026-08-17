@@ -12,6 +12,19 @@
     transition: .2s linear;
 }
 
+/* Dashboard Color Code */
+
+:root {
+    --bg-color: #f7f4f2;
+    --sidebar-bg: #ffffff;
+    --card-bg: #f0e8e4;
+    --primary-color: #5e473e;
+    --accent-color: #caab9f;
+    --text-color: #31231e;
+    --sub-text: #b58d7e;
+    --active-bg: #f4ede9;
+}
+
 body {
     background-color: #faf7f6;
 }
@@ -202,6 +215,7 @@ section {
 #search-btn {
     display: none;
 }
+
 /* ========================================================================================================================= */
 /* Loading  */
 
@@ -209,7 +223,8 @@ section {
 button:disabled {
     background-color: #cccccc !important;
     color: #666666 !important;
-    cursor: not-allowed !important; /* Mouse arrow ကို နှိပ်မရသည့် ပုံစံပြောင်းခြင်း */
+    cursor: not-allowed !important;
+    /* Mouse arrow ကို နှိပ်မရသည့် ပုံစံပြောင်းခြင်း */
     opacity: 0.7;
 }
 
@@ -219,9 +234,15 @@ button:disabled {
 }
 
 @keyframes fa-spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
+
 /* ================================================================================================================= */
 /* header section end */
 
@@ -886,7 +907,7 @@ button:disabled {
 }
 
 .about .image {
-    flex: 1 1 40rem
+    flex: 1 1 40rem;
 }
 
 .about .image img {
@@ -951,8 +972,10 @@ button:disabled {
 .services .box-container .box img {
     font-size: 8rem;
     margin-bottom: 1rem;
+    height: 100%;
+    width: 200px;
+    object-fit: contain;
 }
-
 .services .box-container .box h3 {
     font-size: 2.2rem;
     color: #5e473e;
@@ -1139,6 +1162,162 @@ button:disabled {
     color: #5e473e;
 }
 
+/* Date Input Container */
+.date-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.date-input-wrapper input[type="date"] {
+    width: 100%;
+    padding: 1rem 1.2rem;
+    font-size: 1.5rem;
+    color: var(--text-color, #31231e);
+    background-color: #ffffff;
+    border: 1px solid var(--accent-color, #caab9f);
+    border-radius: 0.8rem;
+    cursor: pointer;
+    text-transform: none;
+}
+
+.date-input-wrapper input[type="date"]:focus {
+    border-color: var(--primary-color, #5e473e);
+    box-shadow: 0 0 0 3px rgba(94, 71, 62, 0.15);
+    outline: none;
+}
+
+
+
+/* Chrome/Edge/Safari Native Color Scheme Adjustments */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    filter: invert(30%) sepia(20%) saturate(1000%) hue-rotate(340deg);
+    opacity: 0.8;
+}
+
+/* Modern Browsers Color Scheme Theme */
+input[type="date"] {
+    color-scheme: light;
+}
+
+/* Dynamic Modal Input Textarea & Dropdown Styling Polish */
+#dynamic_modal_container .input-box input,
+#dynamic_modal_container .input-box textarea,
+#dynamic_modal_container .input-box select {
+    width: 100%;
+    padding: 1.2rem 1.5rem;
+    font-size: 1.4rem;
+    color: var(--text-color, #31231e);
+    background: #ffffff;
+    border: 1px solid var(--accent-color, #caab9f);
+    border-radius: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#dynamic_modal_container .input-box input:focus,
+#dynamic_modal_container .input-box textarea:focus,
+#dynamic_modal_container .input-box select:focus {
+    border-color: var(--primary-color, #5e473e);
+    box-shadow: 0 0 0 3px rgba(94, 71, 62, 0.15);
+}
+
+/* 1. Header Background & Top Corner Radius*/
+.flatpickr-calendar .flatpickr-months {
+    background-color: #5e473e !important;
+    border-top-left-radius: 8px !important;
+    border-top-right-radius: 8px !important;
+}
+
+.flatpickr-calendar .flatpickr-months .flatpickr-month {
+    background-color: #5e473e !important;
+    color: #ffffff !important;
+}
+
+/* 2. Month Dropdown Box Background & Text Color (August Dropdown နေရာ) */
+.flatpickr-current-month .flatpickr-monthDropdown-months {
+    background-color: #5e473e !important;
+    color: #ffffff !important;
+}
+
+.flatpickr-current-month .flatpickr-monthDropdown-months .flatpickr-monthDropdown-month {
+    background-color: #5e473e !important;
+    color: #ffffff !important;
+}
+
+/* 3. Year Text Input Color */
+.flatpickr-current-month input.cur-year {
+    color: #ffffff !important;
+}
+
+/* 4. Left/Right Arrow Icons (မျှားခေါင်းလေးများ) */
+.flatpickr-months .flatpickr-prev-month,
+.flatpickr-months .flatpickr-next-month {
+    fill: #ffffff !important;
+    color: #ffffff !important;
+}
+
+.flatpickr-months .flatpickr-prev-month:hover svg,
+.flatpickr-months .flatpickr-next-month:hover svg {
+    fill: #caab9f !important;
+    /* Hover လုပ်လျှင် ပေါ်မည့် အရောင် */
+}
+
+/* 5. Weekday Bar (Sun, Mon, Tue, Wed, Thu, Fri, Sat တန်း) */
+.flatpickr-calendar .flatpickr-weekdays {
+    background-color: #5e473e !important;
+}
+
+span.flatpickr-weekday {
+    background-color: #5e473e !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+}
+
+.flatpickr-calendar.arrowTop::before,
+.flatpickr-calendar.arrowTop::after {
+    border-bottom-color: #5e473e !important;
+}
+
+.flatpickr-day.selected {
+    background-color: #5e473e;
+}
+
+/* 1. Selected Date (ရွေးချယ်ထားသော ရက်စွဲ - 16) */
+.flatpickr-day.selected,
+.flatpickr-day.startRange,
+.flatpickr-day.endRange,
+.flatpickr-day.selected.inRange,
+.flatpickr-day.selected:focus,
+.flatpickr-day.selected:hover,
+.flatpickr-day.selected.prevMonthDay,
+.flatpickr-day.selected.nextMonthDay {
+    background: #5e473e !important;
+    border-color: #5e473e !important;
+    color: #ffffff !important;
+}
+
+/* 2. Today Date Border (ယနေ့ရက်စွဲ ပတ်လည် Border) */
+.flatpickr-day.today {
+    border-color: #5e473e !important;
+}
+
+.flatpickr-day.today:hover,
+.flatpickr-day.today:focus {
+    background: #5e473e !important;
+    border-color: #5e473e !important;
+    color: #ffffff !important;
+}
+
+/* 3. Hover State (ရက်စွဲများအပေါ် Mouse တင်လိုက်ချိန်) */
+.flatpickr-day:hover,
+.flatpickr-day:focus {
+    background: rgba(94, 71, 62, 0.15) !important;
+    border-color: transparent !important;
+}
+
+
 /* blog page end */
 
 
@@ -1194,7 +1373,6 @@ button:disabled {
 }
 
 /* contact page end */
-
 
 /* footer start */
 
@@ -1271,6 +1449,781 @@ button:disabled {
 }
 
 /* footer end */
+
+/* Error Message */
+
+.errors_message {
+    color: #e74c3c;
+    font-size: 1.3rem;
+    display: none;
+    margin-bottom: 1rem;
+}
+
+/* Dashboard start */
+
+body.admin-body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    display: flex;
+    min-height: 100vh;
+}
+
+/* 1. Sidebar Styling (Left Navigation) */
+
+.sidebar {
+    width: 250px;
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--accent-color);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    height: 100vh;
+    left: 0;
+    top: 0;
+    z-index: 100;
+}
+
+.sidebar .brand {
+    padding: 2.5rem 2rem 2rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.sidebar .brand i {
+    color: var(--primary-color);
+}
+
+.sidebar .brand span {
+    color: var(--sub-text);
+    font-weight: 400;
+}
+
+.sidebar-menu {
+    margin-top: 1rem;
+    padding: 0 1.5rem;
+}
+
+.sidebar-menu a i,
+.stat-card .icon-box i,
+.admin-box i {
+    font-family: "Font Awesome 6 Free" !important;
+    font-weight: 900 !important;
+    display: inline-block !important;
+}
+
+.sidebar-menu li {
+    margin-bottom: 0.5rem;
+    list-style: none;
+}
+
+.sidebar-menu a {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    padding: 1.2rem 1.5rem;
+    color: var(--primary-color);
+    font-size: 1.4rem;
+    font-weight: 500;
+    border-radius: 1rem;
+    transition: all 0.3s ease;
+}
+
+.sidebar-menu a i {
+    font-size: 1.6rem;
+    width: 20px;
+    text-align: center;
+}
+
+.sidebar-menu a:hover,
+.sidebar-menu a.active {
+    background: var(--active-bg);
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+
+/* 2. Main Content & Header */
+
+.main-content {
+    margin-left: 250px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.top-navbar {
+    background: var(--sidebar-bg);
+    padding: 1.5rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--accent-color);
+    position: sticky;
+    top: 0;
+    z-index: 99;
+}
+
+.top-navbar h2 {
+    font-size: 1.8rem;
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.filter-input.nav {
+    width: 700px;
+}
+
+.top-navbar .user-profile {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 1.4rem;
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+.dashboard-body {
+    padding: 3rem;
+}
+
+.welcome-header {
+    margin-bottom: 3rem;
+}
+
+.welcome-header h1 {
+    font-size: 2.6rem;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.welcome-header p {
+    font-size: 1.4rem;
+    color: var(--sub-text);
+}
+
+
+/* 3. Overview Stats Grid */
+
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr));
+    gap: 2rem;
+    margin-bottom: 3.5rem;
+}
+
+.stat-card {
+    background: var(--card-bg);
+    padding: 2.2rem;
+    border-radius: 1.5rem;
+    border: 1px solid var(--accent-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.stat-card .info p {
+    font-size: 1.3rem;
+    color: var(--sub-text);
+}
+
+.stat-card .info h3 {
+    font-size: 2.4rem;
+    color: var(--primary-color);
+    margin-top: 0.3rem;
+}
+
+.stat-card .icon-box {
+    font-size: 2.4rem;
+    color: var(--primary-color);
+    background: #e1cec7;
+    width: 5rem;
+    height: 5rem;
+    border-radius: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* 4. Section Titles & Navigation Grid */
+
+.section-title {
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-bottom: 1.8rem;
+    font-weight: 600;
+}
+
+.admin-category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    gap: 1.8rem;
+    margin-bottom: 3.5rem;
+}
+
+.admin-box {
+    background: #e1cec7;
+    padding: 2rem;
+    border-radius: 1.5rem;
+    border: 1px solid var(--accent-color);
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.admin-box:hover {
+    background: var(--accent-color);
+    transform: translateY(-3px);
+}
+
+.admin-box i {
+    font-size: 2.8rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.admin-box h3 {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+/* 5. Orders Div Table Styling */
+
+.orders-table-container {
+    background: var(--card-bg);
+    padding: 2rem;
+    border-radius: 1.5rem;
+    border: 1px solid var(--accent-color);
+    overflow-x: auto;
+}
+
+.orders-table {
+    min-width: 650px;
+    display: flex;
+    flex-direction: column;
+}
+
+.orders-header,
+.orders-row {
+    display: flex;
+    align-items: center;
+    padding: 1.2rem 1rem;
+}
+
+.orders-header {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--accent-color);
+    padding-bottom: 1.5rem;
+}
+
+.orders-row {
+    font-size: 1.4rem;
+    color: var(--text-color);
+    border-bottom: 1px solid #e1cec7;
+    padding: 1.5rem 1rem;
+}
+
+.orders-row:last-child {
+    border-bottom: none;
+}
+
+/* shop view button */
+
+.btn-view-shop {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #27ae60;
+    color: #ffffff;
+    padding: 8px 16px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1.4rem;
+    transition: background 0.3s ease;
+}
+
+.btn-view-shop:hover {
+    background-color: #219150;
+}
+
+/* Admin view button */
+
+.btn-admin-dashboard {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background-color: #e74c3c;
+    color: #ffffff !important;
+    padding: 6px 14px;
+    border-radius: 4px;
+    font-size: 1.3rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background 0.3s ease;
+}
+
+.btn-admin-dashboard:hover {
+    background-color: #c0392b;
+}
+
+/* Column Width Adjustments */
+.col {
+    padding: 0 0.5rem;
+}
+
+.col-id {
+    flex: 0.8;
+}
+
+.col-customer {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+}
+
+.col-total {
+    flex: 1;
+}
+
+.col-items {
+    flex: 1;
+}
+
+.col-status {
+    flex: 1.5;
+}
+
+.col-action {
+    flex: 1.8;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.subtext {
+    color: var(--sub-text);
+    font-size: 1.2rem;
+}
+
+.badge {
+    display: inline-block;
+    padding: 0.4rem 1.2rem;
+    border-radius: 0.8rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.badge-success {
+    background: #d4edda;
+    color: #155724;
+}
+
+.badge-warning {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.badge-info {
+    background: #d1ecf1;
+    color: #0c5460;
+}
+
+.action-btn {
+    background: #e1cec7;
+    color: var(--primary-color);
+    padding: 0.6rem 1.2rem;
+    border-radius: 0.8rem;
+    font-size: 1.3rem;
+    cursor: pointer;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.action-btn:hover {
+    background: var(--primary-color);
+    color: #ffffff;
+}
+
+/* Dashboard end */
+
+/* Dashboard Products start */
+
+.table_product_image {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.welcome-header_product {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+
+/* Filter Controls Section Styling */
+
+.filter-card {
+    background: var(--card-bg);
+    padding: 1.8rem 2rem;
+    border-radius: 1.5rem;
+    border: 1px solid var(--accent-color);
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.filter-controls-group {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    flex-wrap: wrap;
+}
+
+.filter-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+/* Search Box Styling inside Filters */
+.search-group {
+    flex: 1;
+    min-width: 24rem;
+}
+
+.search-group i {
+    position: absolute;
+    left: 1.5rem;
+    color: var(--sub-text);
+    font-size: 1.4rem;
+    pointer-events: none;
+}
+
+.filter-input {
+    width: 100%;
+    padding: 1rem 1.2rem 1rem 3.8rem;
+    font-size: 1.4rem;
+    color: var(--primary-color);
+    background: #ffffff;
+    border: 1px solid var(--accent-color);
+    border-radius: 1rem;
+    text-transform: none;
+    transition: all 0.3s ease;
+}
+
+.filter-input::placeholder {
+    color: var(--sub-text);
+    text-transform: none;
+}
+
+.filter-input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(94, 71, 62, 0.15);
+}
+
+/* Custom Dropdown Container */
+.custom-dropdown {
+    position: relative;
+    width: 180px;
+    user-select: none;
+}
+
+.dropdown-selected {
+    background: #ffffff;
+    border: 1px solid #caab9f;
+    border-radius: 1rem;
+    padding: 1rem 1.5rem;
+    font-size: 1.3rem;
+    color: #5e473e;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.dropdown-selected:hover {
+    border-color: #5e473e;
+}
+
+/* Dropdown Menu (Popup) */
+.dropdown-options {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    background: #ffffff;
+    border: 1px solid #caab9f;
+    border-radius: 1.2rem;
+    box-shadow: 0 10px 25px rgba(94, 71, 62, 0.15);
+    padding: 0.5rem;
+    display: none;
+    z-index: 100;
+    overflow: hidden;
+}
+
+/* Custom Dropdown ဖွင့်ထားချိန် */
+.custom-dropdown.open .dropdown-options {
+    display: block;
+    animation: fadeIn 0.2s ease;
+}
+
+.custom-dropdown.open .dropdown-selected i {
+    transform: rotate(180deg);
+}
+
+/* Options Styling */
+.dropdown-options .option {
+    padding: 0.8rem 1.2rem;
+    font-size: 1.3rem;
+    color: #5e473e;
+    border-radius: 0.8rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+/* Hover ဖြစ်ချိန်နှင့် Selected ဖြစ်ချိန် Highlight Color */
+.dropdown-options .option:hover,
+.dropdown-options .option.active {
+    background: #f0e8e4;
+    color: #5e473e;
+    font-weight: 600;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Filter Reset Button */
+.filter-btn-reset {
+    background: #e1cec7;
+    color: var(--primary-color);
+    width: 4rem;
+    height: 4rem;
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    cursor: pointer;
+    border: 1px solid var(--accent-color);
+    transition: all 0.3s ease;
+}
+
+.filter-btn-reset:hover {
+    background: var(--primary-color);
+    color: #ffffff;
+    transform: rotate(-180deg);
+}
+
+
+/* Dashboard Products end */
+
+/* Dashboard Messages start */
+.filter-card.messages {
+    display: block;
+}
+
+/* Filter Tabs Styling */
+.tab-card {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.tab-btn {
+    background-color: #ffffff;
+    border: 1px solid #d1d5db;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #4b5563;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.tab-btn:hover {
+    background-color: #f3f4f6;
+}
+
+.tab-btn.active {
+    background-color: #31231e;
+    color: #ffffff;
+    border-color: #31231e;
+}
+
+/* Custom View Modal Backdrop */
+.custom-modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+}
+
+/* Modal Card Box */
+.custom-modal-card {
+    background: #ffffff;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 550px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    animation: fadeIn 0.25s ease-in-out;
+    border: 1px solid var(--accent-color);
+}
+
+/* Modal Header */
+.custom-modal-header {
+    padding: 1.8rem 2rem;
+    background: #31231e;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.custom-modal-header h2 {
+    margin: 0;
+    font-size: 2rem;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.custom-modal-close {
+    background: none;
+    border: none;
+    font-size: 2.4rem;
+    cursor: pointer;
+    color: #666;
+    line-height: 1;
+}
+
+.custom-modal-close:hover {
+    color: #e74c3c;
+}
+
+/* Modal Body */
+.custom-modal-body {
+    padding: 2rem;
+}
+
+.msg-detail-item {
+    margin-bottom: 1.6rem;
+}
+
+.msg-detail-label {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #888;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.5px;
+}
+
+.msg-detail-value {
+    font-size: 1.6rem;
+    color: #222;
+    word-break: break-word;
+    text-transform: none;
+    /* Email နှင့် စာလုံးသေးများ မပြောင်းလဲစေရန် */
+}
+
+.msg-content-box {
+    background: #f9f9f9;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    white-space: pre-wrap;
+    color: #333;
+    font-size: 1.5rem;
+    line-height: 1.6;
+    max-height: 200px;
+    overflow-y: auto;
+    text-transform: none;
+}
+
+/* Table Row Overrides for Messages */
+.email-col-no-transform {
+    text-transform: none !important;
+}
+
+.action-buttons-flex {
+    display: flex;
+    gap: 5px;
+}
+
+.btn-view-custom {
+    background-color: #3498db;
+    color: #ffffff;
+}
+
+.btn-reply-custom {
+    background-color: #2ecc71;
+    color: #ffffff;
+}
+
+.btn-delete-custom {
+    background-color: #e74c3c;
+    color: #ffffff;
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* Dashboard Messages end */
+
+
+
+
+
+
+
+
+
+
+
 
 
 /* responsive start */

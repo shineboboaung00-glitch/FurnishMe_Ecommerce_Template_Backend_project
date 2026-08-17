@@ -28,7 +28,7 @@ class Service extends BaseModel
 
         // 3.Image Validation
         if ($action === 'create' && empty($file_data['image']['name'])) {
-            $errors['image'] = "Product image is required.";
+            $errors['image'] = "Service image is required.";
         }
 
         return $errors;

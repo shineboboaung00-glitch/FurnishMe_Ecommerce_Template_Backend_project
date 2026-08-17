@@ -3,7 +3,7 @@ session_start();
 
 require_once __DIR__ . '/../components/connection.php';
 
-require_once __DIR__ . '/../middleware/auth.php'; // 🟢 1. Middleware ကို ခေါ်ယူခြင်း
+require_once __DIR__ . '/../middleware/auth.php'; 
 
 $database = new Database();
 $db = $database->getConnection();
@@ -14,12 +14,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $item_id = $_POST['item_id'] ?? null;
     $old_image = $_POST['old_image'] ?? '';
 
-    // =========================================================================
-    // 🟢 2. LOGIN ACTION (Admin/User Login ဝင်ခြင်း)
-    // =========================================================================
+    // LOGIN ACTION (Admin/User Login )
     if ($action_type === 'login' || $module === 'auth') {
         header('Content-Type: application/json');
-        
+
         $email = trim($_POST['email'] ?? '');
         $password = trim($_POST['password'] ?? '');
 
@@ -28,20 +26,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit();
         }
 
-        // Database တွင် User စစ်ဆေးခြင်း
+        // Database check
         $stmt = $db->prepare("SELECT * FROM users WHERE email = ?");
         $stmt->execute([$email]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($user && password_verify($password, $user['password'])) {
-            session_regenerate_id(true); // Security အတွက် Session ID အသစ်ပြောင်းခြင်း
+            session_regenerate_id(true); 
 
-            // Session ထဲသို့ User Data သိမ်းဆည်းခြင်း
+            
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['user_name'] = $user['name'];
-            $_SESSION['user_role'] = $user['role']; // 'admin' သို့မဟုတ် 'user'
+            $_SESSION['user_role'] = $user['role'];
 
-            // Admin ဖြစ်ပါက Admin Dashboard သို့၊ Normal User ဖြစ်ပါက Home သို့ လမ်းကြောင်းညွှန်မည်
+            
             $redirect_url = ($user['role'] === 'admin') ? 'admin/dashboard.php' : 'index.php';
 
             echo json_encode([
@@ -51,18 +49,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ]);
         } else {
             echo json_encode([
-                'status' => false, 
-                'errors' => ['email' => 'Email သို့မဟုတ် Password မှားယွင်းနေပါသည်။']
+                'status' => false,
+                'errors' => ['email' => 'Email ( or ) password is wrong.']
             ]);
         }
         exit();
     }
 
-    // =========================================================================
-    // 🔴 3. ADMIN AUTH CHECK (CRUD Operations များအတွက် Admin ဟုတ်မဟုတ် စစ်ဆေးခြင်း)
-    // =========================================================================
-    // Login မဟုတ်သော မည်သည့် Create, Update, Delete Action မဆို Admin ဖြစ်မှသာ လုပ်ဆောင်ခွင့်ပြုမည်
-    checkAdmin();
+    // Auth (Login) Admin Check
+    if ($module !== 'auth' && $module !== 'contact' && $module !== 'newsletter' && $action_type !== 'login') {
+        checkAdmin();
+    }
 
     $class_name = null;
 
@@ -102,7 +99,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header('Content-Type: application/json');
             echo json_encode($data);
             exit();
-
         } else if ($action_type === 'update') {
 
             $controller->id = $item_id;
@@ -114,7 +110,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header('Content-Type: application/json');
             echo json_encode($data);
             exit();
-
         } else if ($action_type === 'delete') {
 
             $controller->id = $item_id;

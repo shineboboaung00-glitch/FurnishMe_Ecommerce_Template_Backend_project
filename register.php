@@ -19,25 +19,24 @@ if (isset($_POST['click'])) {
         $database = new Database();
         $db = $database->getConnection();
 
-        // 🟢 Username သို့မဟုတ် Email တည်ရှိပြီးသား ဟုတ်/မဟုတ် စစ်ဆေးခြင်း[cite: 11]
+        // Username or Email check
         $stmt = $db->prepare("SELECT id FROM users WHERE email = ? OR username = ? LIMIT 1");
         $stmt->execute([$email, $username]);
 
         if ($stmt->rowCount() > 0) {
             $error_message = "ဤ Username သို့မဟုတ် Email ဖြင့် အကောင့်ဖွင့်ပြီးသား ဖြစ်နေပါသည်။";
         } else {
-            // Password Hashing[cite: 11]
+            
             $hashed_password = password_hash($password, PASSWORD_BCRYPT);
-            $role = 'user'; // Normal user အဖြစ် Default သတ်မှတ်ခြင်း[cite: 11]
+            $role = 'user'; 
 
-            // 🟢 Insert Query[cite: 11]
+            
             $insert_stmt = $db->prepare("INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)");
             $success = $insert_stmt->execute([$username, $email, $hashed_password, $role]);
 
             if ($success) {
                 session_regenerate_id(true);
 
-                // 🟢 Auto Log-in ပေးပြီး Index.php သို့ ပို့ခြင်း[cite: 11]
                 $_SESSION['user_id'] = $db->lastInsertId();
                 $_SESSION['username'] = $username;
                 $_SESSION['email'] = $email;

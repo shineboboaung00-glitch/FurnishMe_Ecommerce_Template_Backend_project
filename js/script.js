@@ -56,8 +56,17 @@ function prev() {
 }
 
 // =============================================================================================
-// Dynamic Modal Function
+
+// Helper Function: Get Corract Controller Path (Root vs Admin Folder)
+function getProcessUrl() {
+    return window.location.pathname.includes("/admin/")
+        ? "../controllers/process.php"
+        : "controllers/process.php";
+}
+
 // =============================================================================================
+
+// Dynamic Modal Function
 
 function openDynamicModal(config) {
     let container = document.getElementById("dynamic_modal_container");
@@ -92,10 +101,15 @@ function openDynamicModal(config) {
         form.appendChild(oldImageInput);
     }
 
-    // မူလရှိပြီးသား ပုံလမ်းကြောင်းကို Dynamic စစ်ဆေးယူခြင်း
+    
     let existingImage = "";
     if (config.data) {
-        existingImage = config.data.old_image || config.data.image || config.data.photo || config.data.img || "";
+        existingImage =
+            config.data.old_image ||
+            config.data.image ||
+            config.data.photo ||
+            config.data.img ||
+            "";
     }
     oldImageInput.value = existingImage;
 
@@ -173,17 +187,20 @@ function openDynamicModal(config) {
                         ${fieldError}
                     </div>`;
 
-                    // 5. File Input (with Fixed Real-time Live Preview & Old Image)
+                    // 5. File Input (with Fixed Real-time Live Previrw & Old Image)
                 } else if (field.type === "file") {
-                    // ပုံဟောင်း လမ်းကြောင်းကို စစ်ဆေးခြင်း
+                    
                     let rawImg = value || existingImage;
                     let oldImgSrc = "";
 
                     if (rawImg && rawImg.toString().trim() !== "") {
-                        if (!rawImg.startsWith("http") && !rawImg.startsWith("uploads/")) {
-                            oldImgSrc = "uploads/" + rawImg;
-                        } else {
+                        if (rawImg.startsWith("http") || rawImg.startsWith("/") || rawImg.startsWith("../")) {
                             oldImgSrc = rawImg;
+                        } else if (rawImg.startsWith("uploads/")) {
+                            oldImgSrc = window.location.pathname.includes('/admin/') ? '../' + rawImg : rawImg;
+                        } else {
+                            let uploadPrefix = window.location.pathname.includes('/admin/') ? '../uploads/' : 'uploads/';
+                            oldImgSrc = uploadPrefix + rawImg;
                         }
                     }
 
@@ -205,21 +222,25 @@ function openDynamicModal(config) {
 
                     // 6. Default Standard Inputs
                 } else {
+                    let todayDate = new Date().toISOString().split('T')[0];
+                    let maxAttr = field.max ? `max="${field.max}"` : (field.type === 'date' ? `max="${todayDate}"` : '');
+                    let minAttr = field.min ? `min="${field.min}"` : '';
+                    let stepAttr = field.step ? `step="${field.step}"` : '';
+
                     fieldHTML = `
                     <div class="input-box" ${field.type === "hidden" ? 'style="display:none;"' : ""}>
                         <span>${field.label || ""}</span>
                         <input type="${field.type || "text"}" 
                             name="${field.name}" 
                             value="${value}" 
-                            class="box" 
+                            class="box ${field.type === 'date' ? 'custom-date-picker' : ''}" 
                             placeholder="${field.placeholder || ""}" 
-                            ${field.min !== undefined ? `min="${field.min}"` : ""} 
-                            ${field.max !== undefined ? `max="${field.max}"` : ""} 
-                            ${field.step !== undefined ? `step="${field.step}"` : ""}>
+                            ${minAttr} 
+                            ${maxAttr} 
+                            ${stepAttr}>
                         ${fieldError}
                     </div>`;
                 }
-
                 inputsContainer.innerHTML += fieldHTML;
             });
         }
@@ -231,13 +252,23 @@ function openDynamicModal(config) {
     }
 
     container.style.display = "flex";
+
+    // Flatpickr JS Initialization 
+    if (typeof flatpickr !== "undefined") {
+        flatpickr("#dynamic_modal_container .custom-date-picker", {
+            dateFormat: "Y-m-d",
+            maxDate: "today",
+            disableMobile: "true"
+        });
+    }
 }
 
 function closeDynamicModal() {
     document.getElementById("dynamic_modal_container").style.display = "none";
 }
+// ======================================================================================================
 
-// Dynamic Modal အတွက် Real-time Instant Image Preview Event Listener
+// Dynamic Modal Real-time Instant Image Preview Event Listener
 document.addEventListener("change", function (e) {
     if (e.target && e.target.classList.contains("dynamic-file-input")) {
         let input = e.target;
@@ -257,7 +288,7 @@ document.addEventListener("change", function (e) {
     }
 });
 
-// Dynamic Modal Form Submit Handler (Added Loading State & Button Disabling)
+// Dynamic Modal Form Submit Handler (Added Dynamic Path Detection)
 document.addEventListener("DOMContentLoaded", () => {
     const dynamicForm = document.getElementById("dynamic_form");
 
@@ -286,7 +317,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             let formData = new FormData(this);
 
-            fetch(this.action, {
+            fetch(getProcessUrl(), {
                 method: "POST",
                 body: formData,
             })
@@ -329,8 +360,8 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // =============================================================================================
-// Global AJAX Form Handler
-// =============================================================================================
+
+// Global AJAX Form Handler (Added Dynamic Path Detection with SweetAlert2)
 
 document.querySelectorAll(".ajax-form").forEach((form) => {
     form.addEventListener("submit", function (e) {
@@ -356,7 +387,7 @@ document.querySelectorAll(".ajax-form").forEach((form) => {
 
         const formData = new FormData(currentForm);
 
-        fetch("controllers/process.php", {
+        fetch(getProcessUrl(), {
             method: "POST",
             body: formData,
         })
@@ -368,12 +399,20 @@ document.querySelectorAll(".ajax-form").forEach((form) => {
             })
             .then((data) => {
                 if (data.status === true) {
-                    alert(successMsg);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: successMsg,
+                        confirmButtonColor: '#bc8a5f',
+                        timer: 2000,
+                        timerProgressBar: true
+                    });
                     currentForm.reset();
                 } else if (data.status === false && data.errors) {
                     for (const [key, message] of Object.entries(data.errors)) {
                         let errorSpan =
                             currentForm.querySelector(`#error-${key}`) ||
+                            currentForm.querySelector(`#${key}-error`) ||
                             currentForm.querySelector(`[data-error="${key}"]`);
                         if (errorSpan) {
                             errorSpan.innerText = message;
@@ -383,7 +422,12 @@ document.querySelectorAll(".ajax-form").forEach((form) => {
             })
             .catch((error) => {
                 console.error("AJAX Form Error:", error);
-                alert("Something went wrong. Please try again later.");
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Something went wrong. Please try again later.',
+                    confirmButtonColor: '#31231e'
+                });
             })
             .finally(() => {
                 if (submitBtn) {
@@ -393,3 +437,54 @@ document.querySelectorAll(".ajax-form").forEach((form) => {
             });
     });
 });
+
+// ==================================================================
+
+document.querySelectorAll(".custom-dropdown").forEach((dropdown) => {
+    const selected = dropdown.querySelector(".dropdown-selected");
+    const options = dropdown.querySelectorAll(".option");
+    const hiddenInput = dropdown.querySelector('input[type="hidden"]');
+
+    selected.addEventListener("click", (e) => {
+        e.stopPropagation();
+        document.querySelectorAll(".custom-dropdown").forEach((d) => {
+            if (d !== dropdown) d.classList.remove("open");
+        });
+        dropdown.classList.toggle("open");
+    });
+
+    // Select Option
+    options.forEach((option) => {
+        option.addEventListener("click", () => {
+            options.forEach((o) => o.classList.remove("active"));
+            option.classList.add("active");
+
+            selected.querySelector("span").innerText = option.innerText;
+            if (hiddenInput) hiddenInput.value = option.dataset.value;
+
+            dropdown.classList.remove("open");
+        });
+    });
+});
+
+document.addEventListener("click", () => {
+    document
+        .querySelectorAll(".custom-dropdown")
+        .forEach((d) => d.classList.remove("open"));
+});
+
+// ================================================================================
+
+// message view
+
+function viewMessage(data) {
+    document.getElementById('viewSenderName').innerText = data.name || '-';
+    document.getElementById('viewSenderEmail').innerText = data.email || '-';
+    document.getElementById('viewSenderPhone').innerText = data.phone || '-';
+    document.getElementById('viewMessageContent').innerText = data.message || '-';
+    document.getElementById('messageViewModal').style.display = 'flex';
+}
+
+function closeMessageViewModal() {
+    document.getElementById('messageViewModal').style.display = 'none';
+}
